@@ -1,3 +1,8 @@
+<!DOCTYPE html>
+<html lang="ar-en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Wedding Invitation</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -49,7 +54,7 @@ body{
 }
 #envelope-screen.opened{opacity:0;visibility:hidden;pointer-events:none}
 
-.env-wrap{position:relative;width:260px;height:180px;margin-bottom:48px}
+.env-wrap{position:relative;width:260px;height:180px;margin-bottom:48px;perspective:800px}
 
 /* envelope body */
 .env-body{
@@ -510,6 +515,8 @@ section{padding:80px 24px;max-width:680px;margin:0 auto}
   .rsvp-row{flex-direction:column}
 }
 </style>
+</head>
+<body>
 
 <!-- ══ ENVELOPE SCREEN ════════════════════════════════════════ -->
 <div id="envelope-screen">
@@ -926,6 +933,7 @@ function openEnvelope() {
 }
 
 envScreen.addEventListener('click', openEnvelope);
+envScreen.addEventListener('touchend', function(e){ e.preventDefault(); openEnvelope(); }, {once: true, passive: false});
 document.body.style.overflow = 'hidden';
 
 /* ── Scroll reveal ───────────────────────────────────── */
@@ -937,3 +945,5 @@ document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
 /* ── Init ────────────────────────────────────────────── */
 renderInvitation();
 </script>
+</body>
+</html>
