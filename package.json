@@ -1,0 +1,27 @@
+{
+  "name": "wedding-invitation-platform",
+  "version": "1.0.0",
+  "description": "Digital wedding invitation platform — send via WhatsApp, manage via admin dashboard",
+  "type": "module",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "seed": "node server/seed.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0",
+    "jose": "^5.2.0",
+    "slugify": "^1.6.6"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

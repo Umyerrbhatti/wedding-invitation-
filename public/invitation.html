@@ -1,0 +1,939 @@
+<title>Wedding Invitation</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Naskh+Arabic:wght@400;600;700&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ── TOKENS ─────────────────────────────────────────────── */
+:root {
+  --cream:      #F8F2E8;
+  --cream-2:    #F2EAD8;
+  --cream-3:    #EDE2CC;
+  --ivory:      #FAF6EE;
+  --gold:       #B8861A;
+  --gold-hi:    #C9A038;
+  --gold-pale:  rgba(184,134,26,0.13);
+  --gold-edge:  rgba(184,134,26,0.28);
+  --gold-warm:  #D4AF37;
+  --text-dark:  #2C1F0E;
+  --text-mid:   #6B4E27;
+  --text-muted: #A8896A;
+  --rose:       #8B4A4A;
+  --ff-display: 'Cormorant Garamond','Times New Roman',serif;
+  --ff-ar:      'Noto Naskh Arabic','Traditional Arabic',serif;
+  --ff-ui:      'Montserrat',system-ui,sans-serif;
+}
+
+/* ── BASE ─────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--cream);
+  color:var(--text-dark);
+  font-family:var(--ff-display);
+  font-size:17px;
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* ── ENVELOPE OVERLAY ─────────────────────────────────── */
+#envelope-screen{
+  position:fixed;inset:0;z-index:1000;
+  background:linear-gradient(160deg,#2C1A08 0%,#1A0F04 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;
+  transition:opacity 0.9s ease,visibility 0.9s ease;
+  cursor:pointer;
+}
+#envelope-screen.opened{opacity:0;visibility:hidden;pointer-events:none}
+
+.env-wrap{position:relative;width:260px;height:180px;margin-bottom:48px}
+
+/* envelope body */
+.env-body{
+  width:100%;height:100%;
+  background:linear-gradient(135deg,#D4AF37,#8B6914);
+  border-radius:4px;
+  box-shadow:0 12px 48px rgba(0,0,0,0.6),0 0 80px rgba(212,175,55,0.18);
+  position:relative;overflow:hidden;
+}
+.env-body::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(
+    45deg,transparent,transparent 6px,
+    rgba(255,255,255,0.04) 6px,rgba(255,255,255,0.04) 7px
+  );
+}
+
+/* envelope flap (opens on click) */
+.env-flap{
+  position:absolute;top:0;left:0;right:0;
+  height:50%;
+  background:linear-gradient(135deg,#C9A038,#7A5A10);
+  transform-origin:top center;
+  transform:rotateX(0deg);
+  transition:transform 0.6s cubic-bezier(.25,.46,.45,.94);
+  clip-path:polygon(0 0,100% 0,50% 95%);
+  z-index:2;
+}
+.env-wrap.opening .env-flap{transform:rotateX(-160deg)}
+
+/* wax seal */
+.wax-seal{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:72px;height:72px;z-index:3;
+  transition:opacity 0.3s ease 0.2s;
+}
+.env-wrap.opening .wax-seal{opacity:0}
+
+/* letter peeking out */
+.env-letter{
+  position:absolute;
+  bottom:0;left:10%;right:10%;
+  height:0;
+  background:var(--ivory);
+  border-radius:2px 2px 0 0;
+  transition:height 0.5s cubic-bezier(.25,.46,.45,.94) 0.3s;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--ff-ar);
+  font-size:1.1rem;
+  color:var(--gold);
+  direction:rtl;
+}
+.env-wrap.opening .env-letter{height:60%}
+
+.env-tagline{
+  font-family:var(--ff-display);
+  font-size:clamp(1.1rem,3vw,1.4rem);
+  font-weight:300;
+  font-style:italic;
+  color:rgba(240,220,180,0.9);
+  letter-spacing:0.05em;
+  margin-bottom:10px;
+}
+.env-tap{
+  font-family:var(--ff-ui);
+  font-size:0.6rem;
+  font-weight:300;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  color:rgba(200,160,80,0.7);
+  animation:pulseTap 2s ease-in-out infinite;
+}
+@keyframes pulseTap{0%,100%{opacity:0.5}50%{opacity:1}}
+
+/* ── MUSIC BUTTON ──────────────────────────────────────── */
+#music-btn{
+  position:fixed;bottom:28px;right:24px;
+  z-index:900;
+  width:44px;height:44px;
+  border-radius:50%;
+  background:var(--gold);
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 16px rgba(184,134,26,0.4);
+  transition:transform 0.2s;
+}
+#music-btn:hover{transform:scale(1.08)}
+#music-btn svg{width:18px;height:18px;fill:#FFF8EE}
+
+/* ── ARABESQUE BG ──────────────────────────────────────── */
+body::before{
+  content:'';
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='rgba(184%2C134%2C26%2C0.07)' stroke-width='0.7'%3E%3Ccircle cx='60' cy='60' r='40'/%3E%3Ccircle cx='60' cy='60' r='28'/%3E%3Cpolygon points='60%2C20 72%2C50 105%2C50 78%2C68 88%2C100 60%2C82 32%2C100 42%2C68 15%2C50 48%2C50'/%3E%3C/g%3E%3C/svg%3E");
+}
+.wrapper{position:relative;z-index:1}
+
+/* ── LAYOUT ─────────────────────────────────────────────── */
+section{padding:80px 24px;max-width:680px;margin:0 auto}
+
+/* ── DIVIDERS ─────────────────────────────────────────── */
+.divider{
+  display:flex;align-items:center;gap:16px;
+  margin:40px 0;
+  color:var(--gold);
+}
+.divider::before,.divider::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold-edge),transparent);
+}
+.div-sym{font-size:1.1rem;opacity:0.7}
+
+/* ── HERO ──────────────────────────────────────────────── */
+.hero{
+  min-height:100svh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;padding:60px 28px 80px;
+  position:relative;
+  background:
+    linear-gradient(to bottom, rgba(248,242,232,0) 0%, rgba(248,242,232,0.85) 60%, var(--cream) 100%),
+    linear-gradient(160deg,#D4AF37 0%,#8B6914 30%,#2C1A08 60%,#6B4A1A 100%);
+}
+/* drape curtains */
+.hero::before{
+  content:'';
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 18% 100% at 0% 50%, rgba(180,130,20,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 18% 100% at 100% 50%, rgba(180,130,20,0.18) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero::after{
+  content:'';
+  position:absolute;bottom:0;left:0;right:0;
+  height:120px;
+  background:linear-gradient(transparent,var(--cream));
+  pointer-events:none;
+}
+
+.guest-salutation{
+  font-family:var(--ff-display);
+  font-size:clamp(1rem,2.8vw,1.2rem);
+  font-style:italic;font-weight:300;
+  color:var(--text-mid);
+  letter-spacing:0.04em;
+  opacity:0;animation:riseIn 1s ease 0.3s forwards;
+  margin-bottom:10px;
+}
+.bismillah{
+  font-family:var(--ff-ar);
+  font-size:clamp(2rem,6vw,3.4rem);
+  color:var(--gold);direction:rtl;font-weight:700;
+  line-height:1.4;text-shadow:0 2px 8px rgba(184,134,26,0.2);
+  opacity:0;animation:riseIn 1.4s ease 0.5s forwards;
+}
+.bismillah-tr{
+  font-family:var(--ff-display);font-size:0.82rem;
+  font-style:italic;font-weight:300;color:var(--text-muted);
+  margin-top:4px;
+  opacity:0;animation:riseIn 1.2s ease 1s forwards;
+}
+.hero-line{
+  width:1px;height:60px;
+  background:linear-gradient(to bottom,transparent,var(--gold-edge),transparent);
+  margin:28px auto;
+  opacity:0;animation:fadeIn 1.5s ease 1.3s forwards;
+}
+.couple-ar{
+  font-family:var(--ff-ar);
+  font-size:clamp(2.2rem,7vw,4rem);
+  color:var(--gold);direction:rtl;font-weight:700;
+  line-height:1.3;
+  opacity:0;animation:riseIn 1.2s ease 1.5s forwards;
+}
+.and-divider{
+  font-family:var(--ff-display);font-size:2rem;font-style:italic;
+  color:var(--rose);opacity:0.8;padding:4px 0;
+}
+.couple-en{
+  font-family:var(--ff-display);
+  font-size:clamp(1.4rem,4.5vw,2.6rem);
+  font-weight:300;color:var(--text-dark);
+  line-height:1.25;
+  opacity:0;animation:riseIn 1.2s ease 1.8s forwards;
+}
+.hero-date{
+  font-family:var(--ff-ui);font-size:0.62rem;font-weight:300;
+  letter-spacing:0.3em;text-transform:uppercase;
+  color:var(--text-muted);margin-top:28px;
+  opacity:0;animation:fadeIn 1.5s ease 2.1s forwards;
+}
+.hero-scroll{
+  position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
+  font-family:var(--ff-ui);font-size:0.55rem;
+  letter-spacing:0.28em;text-transform:uppercase;
+  color:var(--text-muted);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  opacity:0;animation:fadeIn 1.5s ease 2.5s forwards;z-index:2;
+}
+.hero-scroll-arrow{
+  width:1px;height:36px;
+  background:linear-gradient(to bottom,var(--gold-edge),transparent);
+  animation:scrollPulse 2s ease-in-out 2.8s infinite;
+}
+
+/* ── ARABIC TEXT ──────────────────────────────────────── */
+.arabic-section{
+  text-align:center;
+  background:linear-gradient(135deg,rgba(184,134,26,0.06),rgba(184,134,26,0.02));
+  border:1px solid var(--gold-edge);
+  border-radius:2px;
+  padding:64px 32px;
+  max-width:680px;margin:0 auto;
+}
+.arabic-text{
+  font-family:var(--ff-ar);font-size:clamp(1.1rem,3.2vw,1.5rem);
+  color:var(--text-dark);direction:rtl;line-height:2.1;
+  font-weight:400;
+}
+.arabic-text strong{color:var(--gold);font-weight:700}
+
+/* ── TIMELINE ──────────────────────────────────────────── */
+.timeline-section{text-align:center}
+.section-eyebrow{
+  font-family:var(--ff-ui);font-size:0.58rem;font-weight:300;
+  letter-spacing:0.32em;text-transform:uppercase;
+  color:var(--text-muted);margin-bottom:8px;
+}
+.section-title{
+  font-family:var(--ff-display);font-size:clamp(1.6rem,5vw,2.4rem);
+  font-weight:300;font-style:italic;color:var(--text-dark);
+}
+.timeline{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+  gap:0;margin-top:52px;
+  border:1px solid var(--gold-edge);
+  border-radius:2px;overflow:hidden;
+}
+.tl-item{
+  padding:32px 16px 28px;
+  border-right:1px solid var(--gold-edge);
+  background:var(--ivory);
+  transition:background 0.2s;
+}
+.tl-item:last-child{border-right:none}
+.tl-item:hover{background:var(--cream-2)}
+.tl-time{
+  font-family:var(--ff-display);font-size:2rem;font-weight:600;
+  color:var(--gold);line-height:1;letter-spacing:0.02em;
+  margin-bottom:8px;
+}
+.tl-label{
+  font-family:var(--ff-ui);font-size:0.6rem;font-weight:500;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--text-mid);margin-bottom:6px;
+}
+.tl-desc{
+  font-family:var(--ff-display);font-size:0.92rem;
+  font-style:italic;color:var(--text-muted);
+}
+
+/* ── COUNTDOWN ─────────────────────────────────────────── */
+.countdown-section{
+  text-align:center;
+  background:linear-gradient(135deg,var(--cream-2),var(--ivory));
+}
+.countdown-label{
+  font-family:var(--ff-display);font-size:clamp(1.2rem,3.5vw,1.7rem);
+  font-style:italic;font-weight:300;color:var(--text-mid);
+  margin-bottom:36px;
+}
+.countdown-grid{
+  display:flex;justify-content:center;gap:8px;flex-wrap:wrap;
+}
+.cd-unit{
+  display:flex;flex-direction:column;align-items:center;
+  min-width:68px;
+  padding:20px 16px 16px;
+  background:var(--ivory);
+  border:1px solid var(--gold-edge);
+  border-radius:2px;
+}
+.cd-num{
+  font-family:var(--ff-display);font-size:clamp(2rem,6vw,3rem);
+  font-weight:600;color:var(--gold);
+  font-variant-numeric:tabular-nums;line-height:1;
+}
+.cd-label{
+  font-family:var(--ff-ui);font-size:0.52rem;font-weight:300;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--text-muted);margin-top:6px;
+}
+
+/* ── VENUE ──────────────────────────────────────────────── */
+.venue-section{text-align:center}
+.venue-name-ar{
+  font-family:var(--ff-ar);font-size:clamp(1.4rem,4vw,2rem);
+  color:var(--gold);direction:rtl;margin-bottom:6px;
+}
+.venue-name-en{
+  font-family:var(--ff-display);font-size:clamp(1.2rem,3.5vw,1.7rem);
+  font-weight:300;font-style:italic;color:var(--text-dark);
+}
+.venue-address{
+  font-family:var(--ff-ui);font-size:0.78rem;font-weight:300;
+  color:var(--text-muted);letter-spacing:0.06em;
+  margin-top:8px;
+}
+.map-buttons{
+  display:flex;gap:10px;justify-content:center;flex-wrap:wrap;
+  margin-top:32px;
+}
+.map-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 22px;
+  border:1px solid var(--gold-edge);
+  background:transparent;color:var(--gold);
+  font-family:var(--ff-ui);font-size:0.65rem;font-weight:400;
+  letter-spacing:0.16em;text-transform:uppercase;
+  text-decoration:none;border-radius:2px;cursor:pointer;
+  transition:background 0.2s,color 0.2s;
+}
+.map-btn:hover{background:var(--gold);color:var(--ivory)}
+.map-btn svg{width:14px;height:14px;flex-shrink:0}
+
+/* ── DRESS CODE ─────────────────────────────────────────── */
+.dresscode-section{
+  text-align:center;
+  background:linear-gradient(135deg,rgba(184,134,26,0.05),transparent);
+  border-top:1px solid var(--gold-edge);
+  border-bottom:1px solid var(--gold-edge);
+}
+.palette{
+  display:flex;gap:14px;justify-content:center;flex-wrap:wrap;
+  margin-top:36px;
+}
+.swatch{
+  width:52px;height:52px;border-radius:50%;
+  box-shadow:0 2px 12px rgba(0,0,0,0.12);
+  position:relative;
+}
+.swatch::after{
+  content:attr(data-name);
+  position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);
+  font-family:var(--ff-ui);font-size:0.48rem;
+  letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--text-muted);white-space:nowrap;
+}
+.dresscode-notes{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;
+  margin-top:44px;max-width:460px;margin-left:auto;margin-right:auto;
+}
+.dc-note{
+  padding:20px;border:1px solid var(--gold-edge);background:var(--ivory);
+  border-radius:2px;
+}
+.dc-note-label{
+  font-family:var(--ff-ui);font-size:0.55rem;font-weight:500;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:6px;
+}
+.dc-note-text{
+  font-family:var(--ff-display);font-size:0.92rem;
+  font-style:italic;color:var(--text-mid);
+}
+
+/* ── RSVP ──────────────────────────────────────────────── */
+.rsvp-section{text-align:center}
+.rsvp-form{
+  max-width:460px;margin:40px auto 0;
+  display:flex;flex-direction:column;gap:14px;
+  text-align:left;
+}
+.rsvp-form input,.rsvp-form select{
+  width:100%;
+  padding:13px 16px;
+  background:var(--ivory);
+  border:1px solid var(--gold-edge);
+  border-radius:2px;
+  font-family:var(--ff-display);font-size:1rem;
+  color:var(--text-dark);
+  outline:none;transition:border-color 0.2s;
+}
+.rsvp-form input:focus,.rsvp-form select:focus{border-color:var(--gold)}
+.rsvp-row{display:flex;gap:12px}
+.rsvp-row>*{flex:1}
+.attending-toggle{display:flex;gap:10px}
+.att-btn{
+  flex:1;padding:13px 8px;
+  border:1px solid var(--gold-edge);background:var(--ivory);
+  font-family:var(--ff-ui);font-size:0.62rem;letter-spacing:0.18em;
+  text-transform:uppercase;color:var(--text-muted);
+  cursor:pointer;border-radius:2px;transition:all 0.2s;
+}
+.att-btn.active{background:var(--gold);color:var(--ivory);border-color:var(--gold)}
+.rsvp-submit{
+  padding:15px;
+  background:var(--gold);border:none;border-radius:2px;
+  font-family:var(--ff-ui);font-size:0.65rem;font-weight:500;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--ivory);cursor:pointer;
+  transition:background 0.2s,transform 0.1s;
+}
+.rsvp-submit:hover{background:#9A7015;transform:translateY(-1px)}
+.rsvp-submit:active{transform:translateY(0)}
+.rsvp-msg{
+  text-align:center;padding:16px;
+  font-family:var(--ff-display);font-style:italic;
+  color:var(--gold);display:none;
+}
+
+/* ── FOOTER ─────────────────────────────────────────────── */
+.footer{
+  text-align:center;padding:60px 24px;
+  background:var(--cream-2);
+  border-top:1px solid var(--gold-edge);
+}
+.footer-names{
+  font-family:var(--ff-display);font-size:clamp(1.1rem,3vw,1.5rem);
+  font-weight:300;font-style:italic;color:var(--text-dark);
+}
+.footer-share{
+  margin-top:28px;
+  display:flex;gap:12px;justify-content:center;flex-wrap:wrap;
+}
+.share-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 22px;
+  background:transparent;border:1px solid var(--gold-edge);
+  font-family:var(--ff-ui);font-size:0.62rem;font-weight:400;
+  letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--gold);border-radius:2px;
+  cursor:pointer;text-decoration:none;
+  transition:background 0.2s,color 0.2s;
+}
+.share-btn:hover{background:var(--gold);color:var(--ivory)}
+.share-btn.wa{background:rgba(37,211,102,0.08);border-color:rgba(37,211,102,0.4);color:#0a7a3b}
+.share-btn.wa:hover{background:#25D366;color:#fff;border-color:#25D366}
+
+/* ── ANIMATIONS ──────────────────────────────────────────── */
+@keyframes riseIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scrollPulse{0%,100%{opacity:0.4;transform:scaleY(0.8)}50%{opacity:0.9;transform:scaleY(1)}}
+
+/* ── SCROLL ANIMATIONS ────────────────────────────────── */
+.scroll-reveal{opacity:0;transform:translateY(24px);transition:opacity 0.8s ease,transform 0.8s ease}
+.scroll-reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media(max-width:540px){
+  .timeline{grid-template-columns:1fr 1fr}
+  .tl-item:nth-child(2){border-right:none}
+  .tl-item:nth-child(3){border-top:1px solid var(--gold-edge)}
+  .dresscode-notes{grid-template-columns:1fr}
+  .rsvp-row{flex-direction:column}
+}
+</style>
+
+<!-- ══ ENVELOPE SCREEN ════════════════════════════════════════ -->
+<div id="envelope-screen">
+  <div class="env-wrap" id="envWrap">
+    <div class="env-body">
+      <div class="env-flap"></div>
+      <!-- wax seal SVG -->
+      <svg class="wax-seal" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="36" cy="36" r="32" fill="#8B1A1A" opacity="0.9"/>
+        <circle cx="36" cy="36" r="28" fill="none" stroke="#C9A038" stroke-width="0.8" opacity="0.7"/>
+        <circle cx="36" cy="36" r="22" fill="none" stroke="#C9A038" stroke-width="0.5" opacity="0.5"/>
+        <!-- petals -->
+        <g fill="none" stroke="#C9A038" stroke-width="0.7" opacity="0.6">
+          <line x1="36" y1="14" x2="36" y2="22"/>
+          <line x1="36" y1="50" x2="36" y2="58"/>
+          <line x1="14" y1="36" x2="22" y2="36"/>
+          <line x1="50" y1="36" x2="58" y2="36"/>
+          <line x1="21" y1="21" x2="27" y2="27"/>
+          <line x1="51" y1="21" x2="45" y2="27"/>
+          <line x1="21" y1="51" x2="27" y2="45"/>
+          <line x1="51" y1="51" x2="45" y2="45"/>
+        </g>
+        <text x="36" y="32" text-anchor="middle" font-family="'Noto Naskh Arabic',serif" font-size="9" fill="#D4AF37" direction="rtl">بِسْمِ</text>
+        <text x="36" y="44" text-anchor="middle" font-family="'Noto Naskh Arabic',serif" font-size="9" fill="#D4AF37" direction="rtl">اللَّهِ</text>
+      </svg>
+      <div class="env-letter">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+    </div>
+  </div>
+  <p class="env-tagline">You are cordially invited</p>
+  <p class="env-tap">Tap to open</p>
+</div>
+
+<!-- ══ MUSIC ════════════════════════════════════════════════ -->
+<audio id="bgMusic" loop preload="none"></audio>
+<button id="music-btn" aria-label="Toggle music" title="Music" style="display:none">
+  <svg id="music-icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+  <svg id="music-icon-pause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+</button>
+
+<!-- ══ INVITATION ════════════════════════════════════════════ -->
+<div class="wrapper" id="invitation" style="display:none">
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="guest-salutation" id="guestGreeting"></p>
+    <p class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+    <p class="bismillah-tr">In the Name of God, the Most Gracious, the Most Merciful</p>
+    <div class="hero-line"></div>
+    <div class="couple-ar" id="coupleAr"></div>
+    <div class="and-divider">&</div>
+    <div class="couple-en" id="coupleEn"></div>
+    <p class="hero-date" id="heroDate"></p>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="hero-scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- ARABIC INVITATION TEXT -->
+  <section class="arabic-section scroll-reveal" id="arabicSection">
+    <div class="divider"><span class="div-sym">✦</span></div>
+    <p class="arabic-text" id="arabicText"></p>
+    <div class="divider"><span class="div-sym">✦</span></div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section class="timeline-section scroll-reveal">
+    <p class="section-eyebrow">The Celebration</p>
+    <h2 class="section-title">Programme of the Day</h2>
+    <div class="timeline" id="timelineGrid"></div>
+  </section>
+
+  <!-- COUNTDOWN -->
+  <section class="countdown-section scroll-reveal">
+    <p class="section-eyebrow">Until the Celebration</p>
+    <p class="countdown-label">La Célébration Commence</p>
+    <div class="countdown-grid">
+      <div class="cd-unit"><span class="cd-num" id="cd-d">00</span><span class="cd-label">Days</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-h">00</span><span class="cd-label">Hours</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-m">00</span><span class="cd-label">Minutes</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-s">00</span><span class="cd-label">Seconds</span></div>
+    </div>
+  </section>
+
+  <!-- VENUE -->
+  <section class="venue-section scroll-reveal">
+    <p class="section-eyebrow">Where</p>
+    <div class="venue-name-ar" id="venueAr"></div>
+    <div class="venue-name-en" id="venueEn"></div>
+    <p class="venue-address" id="venueAddress"></p>
+    <div class="map-buttons" id="mapButtons"></div>
+  </section>
+
+  <!-- DRESS CODE -->
+  <section class="dresscode-section scroll-reveal" id="dresscodeSection">
+    <p class="section-eyebrow">Attire</p>
+    <h2 class="section-title">Dress Code</h2>
+    <div class="palette" id="colorPalette"></div>
+    <div class="dresscode-notes">
+      <div class="dc-note">
+        <p class="dc-note-label">Ladies</p>
+        <p class="dc-note-text">Formal gowns, abayas, or elegant evening wear in our palette</p>
+      </div>
+      <div class="dc-note">
+        <p class="dc-note-label">Gentlemen</p>
+        <p class="dc-note-text">Black tie, traditional thobe, or formal dark suit</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- RSVP -->
+  <section class="rsvp-section scroll-reveal" id="rsvpSection">
+    <p class="section-eyebrow">Kindly Reply</p>
+    <h2 class="section-title">RSVP</h2>
+    <form class="rsvp-form" id="rsvpForm">
+      <input type="text" id="rsvp-name" placeholder="Your full name" required>
+      <div class="rsvp-row">
+        <div>
+          <p style="font-family:var(--ff-ui);font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">Attending?</p>
+          <div class="attending-toggle">
+            <button type="button" class="att-btn active" data-val="yes" onclick="setAttending(this)">Yes</button>
+            <button type="button" class="att-btn" data-val="no" onclick="setAttending(this)">Regretfully No</button>
+          </div>
+        </div>
+        <select id="rsvp-count" style="align-self:flex-end">
+          <option value="1">1 guest</option>
+          <option value="2">2 guests</option>
+          <option value="3">3 guests</option>
+          <option value="4">4 guests</option>
+          <option value="5">5 guests</option>
+          <option value="6">6 guests</option>
+        </select>
+      </div>
+      <button type="submit" class="rsvp-submit">Confirm Attendance</button>
+      <p class="rsvp-msg" id="rsvpMsg"></p>
+    </form>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="divider"><span class="div-sym">❦</span></div>
+    <p class="footer-names" id="footerNames"></p>
+    <div class="footer-share">
+      <a class="share-btn wa" id="waShareBtn" href="#" target="_blank">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Share on WhatsApp
+      </a>
+      <button class="share-btn" onclick="copyLink()">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        Copy Link
+      </button>
+    </div>
+    <p style="margin-top:32px;font-family:var(--ff-display);font-size:0.8rem;font-style:italic;color:var(--text-muted)">With love & joy ✦</p>
+  </footer>
+</div>
+
+<script>
+/* WEDDING_CONFIG_PLACEHOLDER */
+
+/* ── Fallback config for static preview ───────────────── */
+if (typeof W === 'undefined') {
+  var W = {
+    id: null,
+    groomAr: 'محمد عبدالله',
+    groomEn: 'Mohammad Abdullah',
+    groomFamilyAr: 'آل الراشد',
+    groomFamilyEn: 'Al-Rashid',
+    brideAr: 'ليلى خالد',
+    brideEn: 'Layla Khalid',
+    brideFamilyAr: 'آل المطيري',
+    brideFamilyEn: 'Al-Mutairi',
+    contactPhone: '+966500000000',
+    rsvpEnabled: true,
+    rsvpDeadline: null,
+    shareText: "You're invited to our wedding! 💍",
+    guestName: null,
+    musicUrl: null,
+    bgPhotoUrl: null,
+    dressCodeColors: [
+      {hex:'#D4AF37',name:'Gold'},
+      {hex:'#F5F0E8',name:'Ivory'},
+      {hex:'#8B4A4A',name:'Rose'},
+      {hex:'#2C4A3E',name:'Forest'},
+      {hex:'#1A1A2E',name:'Midnight'}
+    ],
+    timeline: [
+      {time:'16:00',label:'Welcome Reception',descAr:'الاستقبال'},
+      {time:'17:00',label:'Nikah Ceremony',descAr:'عقد القران'},
+      {time:'19:00',label:'Dinner',descAr:'العشاء'},
+      {time:'20:00',label:'Celebration',descAr:'الاحتفال'}
+    ],
+    events: [],
+    venue: {
+      nameAr: 'قاعة الأفراح الملكية',
+      nameEn: 'Royal Wedding Hall',
+      address: 'King Fahd Road, Al Olaya, Riyadh',
+      googleMaps: 'https://maps.google.com/?q=Royal+Wedding+Hall+Riyadh',
+      appleMaps: 'https://maps.apple.com/?q=Royal+Wedding+Hall+Riyadh',
+      waze: 'https://waze.com/ul?q=Royal+Wedding+Hall+Riyadh'
+    },
+    countdownISO: new Date(Date.now() + 90*24*60*60*1000).toISOString()
+  };
+}
+
+/* ── Parse guest name from URL ─────────────────────────── */
+const urlParams = new URLSearchParams(window.location.search);
+const guestName = W.guestName || urlParams.get('guest') || urlParams.get('name') || '';
+
+/* ── Populate invitation ────────────────────────────────── */
+function pad(n){return String(n).padStart(2,'0')}
+
+function renderInvitation() {
+  // Guest greeting
+  const greetEl = document.getElementById('guestGreeting');
+  if (guestName) {
+    greetEl.textContent = `Dear ${guestName},`;
+    greetEl.style.opacity = '1';
+    greetEl.style.animation = 'none';
+  }
+
+  // Couple names
+  document.getElementById('coupleAr').innerHTML =
+    `${W.groomAr}<br><small style="font-size:0.5em;font-family:var(--ff-ui);font-weight:300;letter-spacing:0.16em;color:var(--text-muted)">${W.groomFamilyAr}</small>`;
+  document.getElementById('coupleEn').innerHTML =
+    `${W.groomEn}<br><small style="font-size:0.52em;font-family:var(--ff-ui);font-weight:300;letter-spacing:0.16em;color:var(--text-muted)">${W.groomFamilyEn}</small>`;
+
+  // Hero date — pull from first event if available
+  const firstEvent = W.events?.[0];
+  if (firstEvent?.iso || W.countdownISO) {
+    const d = new Date(firstEvent?.iso || W.countdownISO);
+    document.getElementById('heroDate').textContent =
+      d.toLocaleDateString('en-SA',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  }
+
+  // Arabic invitation text
+  document.getElementById('arabicText').innerHTML =
+    `يُسعد عائلة <strong>${W.groomFamilyAr}</strong><br>` +
+    `وعائلة <strong>${W.brideFamilyAr}</strong><br>` +
+    `بدعوتكم لحضور حفل زفاف<br>` +
+    `<strong>${W.groomAr}</strong> و <strong>${W.brideAr}</strong>`;
+
+  // Timeline — use W.timeline if available, else build from events
+  const tlGrid = document.getElementById('timelineGrid');
+  const timelineItems = W.timeline?.length ? W.timeline :
+    (W.events?.length ? W.events.map(e => ({
+      time: e.timeStr, label: e.nameEn, descAr: e.nameAr
+    })) : []);
+  tlGrid.innerHTML = timelineItems.map(t => `
+    <div class="tl-item">
+      <div class="tl-time">${t.time}</div>
+      <div class="tl-label">${t.label}</div>
+      <div class="tl-desc">${t.descAr || ''}</div>
+    </div>
+  `).join('');
+
+  // Venue
+  const v = W.venue || {};
+  document.getElementById('venueAr').textContent = v.nameAr || '';
+  document.getElementById('venueEn').textContent = v.nameEn || '';
+  document.getElementById('venueAddress').textContent = v.address || '';
+  const mapBtns = document.getElementById('mapButtons');
+  if (v.googleMaps) mapBtns.innerHTML += `<a class="map-btn" href="${v.googleMaps}" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+    Google Maps</a>`;
+  if (v.appleMaps) mapBtns.innerHTML += `<a class="map-btn" href="${v.appleMaps}" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+    Apple Maps</a>`;
+  if (v.waze) mapBtns.innerHTML += `<a class="map-btn" href="${v.waze}" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+    Waze</a>`;
+
+  // Dress code colors
+  const palette = document.getElementById('colorPalette');
+  const colors = W.dressCodeColors?.length ? W.dressCodeColors : [
+    {hex:'#D4AF37',name:'Gold'},{hex:'#F5F0E8',name:'Ivory'},
+    {hex:'#8B4A4A',name:'Rose'},{hex:'#2C4A3E',name:'Forest'},{hex:'#1A1A2E',name:'Midnight'}
+  ];
+  palette.innerHTML = colors.map(c =>
+    `<div class="swatch" style="background:${c.hex}" data-name="${c.name}" title="${c.name}"></div>`
+  ).join('');
+
+  // WhatsApp share
+  const slug = window.location.pathname.split('/').pop();
+  const invUrl = window.location.href;
+  const shareMsg = encodeURIComponent((W.shareText || "You're invited! 💍") + '\n' + invUrl);
+  document.getElementById('waShareBtn').href = `https://wa.me/?text=${shareMsg}`;
+
+  // Footer names
+  document.getElementById('footerNames').textContent = `${W.groomEn} & ${W.brideEn}`;
+
+  // Music
+  if (W.musicUrl) {
+    const audio = document.getElementById('bgMusic');
+    audio.src = W.musicUrl;
+    document.getElementById('music-btn').style.display = 'flex';
+  }
+
+  // Document title
+  document.title = `${W.groomEn} & ${W.brideEn} — Wedding Invitation`;
+}
+
+/* ── Countdown ────────────────────────────────────────── */
+function updateCountdown() {
+  const target = W.countdownISO || (W.events?.[0]?.iso);
+  if (!target) return;
+  const diff = new Date(target) - Date.now();
+  if (diff <= 0) {
+    document.getElementById('cd-d').textContent = '00';
+    document.getElementById('cd-h').textContent = '00';
+    document.getElementById('cd-m').textContent = '00';
+    document.getElementById('cd-s').textContent = '00';
+    return;
+  }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cd-d').textContent = pad(d);
+  document.getElementById('cd-h').textContent = pad(h);
+  document.getElementById('cd-m').textContent = pad(m);
+  document.getElementById('cd-s').textContent = pad(s);
+}
+setInterval(updateCountdown, 1000);
+
+/* ── RSVP ────────────────────────────────────────────── */
+let isAttending = true;
+function setAttending(btn) {
+  document.querySelectorAll('.att-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  isAttending = btn.dataset.val === 'yes';
+  document.getElementById('rsvp-count').style.opacity = isAttending ? '1' : '0.4';
+}
+
+document.getElementById('rsvpForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const name = document.getElementById('rsvp-name').value.trim();
+  const guestCount = parseInt(document.getElementById('rsvp-count').value) || 1;
+  const slug = window.location.pathname.replace('/invite/','').split('?')[0];
+  const msg = document.getElementById('rsvpMsg');
+  try {
+    const res = await fetch('/api/rsvp', {
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({slug,name,attending:isAttending,guestCount,message:''})
+    });
+    const data = await res.json();
+    msg.style.display = 'block';
+    if (res.ok) {
+      msg.style.color = 'var(--gold)';
+      msg.textContent = isAttending
+        ? `Thank you, ${name}! We look forward to celebrating with you.`
+        : `Thank you for letting us know, ${name}. You'll be missed.`;
+      e.target.reset();
+    } else {
+      msg.style.color = 'var(--rose)';
+      msg.textContent = data.error || 'Something went wrong. Please try again.';
+    }
+  } catch {
+    msg.style.display = 'block';
+    msg.style.color = 'var(--rose)';
+    msg.textContent = 'Network error. Please try again.';
+  }
+});
+
+/* ── Copy link ───────────────────────────────────────── */
+function copyLink() {
+  navigator.clipboard?.writeText(window.location.href).then(() => {
+    alert('Link copied!');
+  }).catch(() => {
+    prompt('Copy this link:', window.location.href);
+  });
+}
+
+/* ── Music toggle ────────────────────────────────────── */
+const audio = document.getElementById('bgMusic');
+document.getElementById('music-btn').addEventListener('click', () => {
+  if (audio.paused) {
+    audio.play().catch(()=>{});
+    document.getElementById('music-icon-play').style.display = 'none';
+    document.getElementById('music-icon-pause').style.display = '';
+  } else {
+    audio.pause();
+    document.getElementById('music-icon-play').style.display = '';
+    document.getElementById('music-icon-pause').style.display = 'none';
+  }
+});
+
+/* ── Analytics tracking ──────────────────────────────── */
+function track(eventType, eventData) {
+  if (!W?.id) return;
+  fetch('/api/track', {
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({invitationId:W.id,eventType,eventData})
+  }).catch(()=>{});
+}
+document.querySelectorAll('.map-btn').forEach(btn => {
+  btn.addEventListener('click', () => track('maps_open', {url: btn.href}));
+});
+document.getElementById('waShareBtn').addEventListener('click', () => track('wa_share'));
+
+/* ── Envelope open animation ─────────────────────────── */
+const envScreen = document.getElementById('envelope-screen');
+const envWrap   = document.getElementById('envWrap');
+const invitation = document.getElementById('invitation');
+
+function openEnvelope() {
+  envWrap.classList.add('opening');
+  setTimeout(() => {
+    envScreen.classList.add('opened');
+    invitation.style.display = '';
+    document.body.style.overflow = '';
+    updateCountdown();
+    track('view');
+  }, 900);
+}
+
+envScreen.addEventListener('click', openEnvelope);
+document.body.style.overflow = 'hidden';
+
+/* ── Scroll reveal ───────────────────────────────────── */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold: 0.15});
+document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+
+/* ── Init ────────────────────────────────────────────── */
+renderInvitation();
+</script>

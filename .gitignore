@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Environment — NEVER commit secrets
+.env
+.env.local
+.env.*.local
+
+# Output / cache
+output/
+.DS_Store
+*.log
+npm-debug.log*
+
+# Build artifacts
+dist/
+.cache/
