@@ -84,7 +84,7 @@ app.get('/invite/:slug', async (req, res) => {
   // Inject wedding data into the HTML template
   let html = readFileSync(path.join(ROOT, 'public', 'invitation.html'), 'utf8');
   const config = buildConfig(inv, guestName);
-  html = html.replace('/* WEDDING_CONFIG_PLACEHOLDER */', `const W = ${JSON.stringify(config)};`);
+  html = html.replace('/* WEDDING_CONFIG_PLACEHOLDER */', `var W = ${JSON.stringify(config)};`);
 
   // Track page view (fire-and-forget)
   supabaseService.from('analytics_events').insert({
