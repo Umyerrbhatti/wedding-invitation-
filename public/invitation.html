@@ -51,6 +51,7 @@ body{
   text-align:center;
   transition:opacity 0.9s ease,visibility 0.9s ease;
   cursor:pointer;
+  box-shadow:inset 0 0 0 5px rgba(184,134,26,0.22),inset 0 0 0 7px rgba(248,244,232,0.60);
 }
 /* soft bokeh circles */
 #envelope-screen::before{
@@ -63,6 +64,23 @@ body{
     radial-gradient(circle  60px at 90% 35%,rgba(255,248,220,0.4) 0%,transparent 70%);
 }
 #envelope-screen.opened{opacity:0;visibility:hidden;pointer-events:none}
+
+/* ── MUGHAL ORNAMENTAL OVERLAY ──────────────────────────── */
+/* jali lattice screen texture */
+#envelope-screen::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    repeating-linear-gradient(45deg,transparent 0,transparent 7px,rgba(184,134,26,0.052) 7px,rgba(184,134,26,0.052) 8px),
+    repeating-linear-gradient(-45deg,transparent 0,transparent 7px,rgba(184,134,26,0.052) 7px,rgba(184,134,26,0.052) 8px);
+}
+/* Mughal crown arch — top framing element */
+.mughal-crown{position:absolute;top:0;left:0;width:100%;pointer-events:none;display:block;overflow:visible}
+/* Corner arabesque ornaments */
+.mughal-corner{position:absolute;width:clamp(70px,16vw,90px);height:clamp(70px,16vw,90px);pointer-events:none;display:block}
+.mughal-tl{top:0;left:0}
+.mughal-tr{top:0;right:0;transform:scaleX(-1)}
+.mughal-bl{bottom:0;left:0;transform:scaleY(-1)}
+.mughal-br{bottom:0;right:0;transform:scale(-1,-1)}
 
 .env-wrap{position:relative;width:300px;height:210px;margin-bottom:36px;perspective:800px}
 
@@ -555,6 +573,181 @@ section{padding:80px 24px;max-width:680px;margin:0 auto}
 
 <!-- ══ ENVELOPE SCREEN ════════════════════════════════════════ -->
 <div id="envelope-screen">
+
+  <!-- ══ MUGHAL ARCH CROWN ══════════════════════════════════ -->
+  <svg class="mughal-crown" viewBox="0 0 400 208" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMin meet" aria-hidden="true">
+    <!-- Diamond-chain top border band -->
+    <rect x="0" y="0" width="400" height="15" fill="rgba(184,134,26,0.10)"/>
+    <polyline fill="none" stroke="rgba(184,134,26,0.50)" stroke-width="0.8"
+      points="0,7.5 8,1 16,7.5 24,1 32,7.5 40,1 48,7.5 56,1 64,7.5 72,1 80,7.5 88,1 96,7.5 104,1 112,7.5 120,1 128,7.5 136,1 144,7.5 152,1 160,7.5 168,1 176,7.5 184,1 192,7.5 200,1 208,7.5 216,1 224,7.5 232,1 240,7.5 248,1 256,7.5 264,1 272,7.5 280,1 288,7.5 296,1 304,7.5 312,1 320,7.5 328,1 336,7.5 344,1 352,7.5 360,1 368,7.5 376,1 384,7.5 392,1 400,7.5"/>
+    <polyline fill="none" stroke="rgba(184,134,26,0.50)" stroke-width="0.8"
+      points="0,7.5 8,14 16,7.5 24,14 32,7.5 40,14 48,7.5 56,14 64,7.5 72,14 80,7.5 88,14 96,7.5 104,14 112,7.5 120,14 128,7.5 136,14 144,7.5 152,14 160,7.5 168,14 176,7.5 184,14 192,7.5 200,14 208,7.5 216,14 224,7.5 232,14 240,7.5 248,14 256,7.5 264,14 272,7.5 280,14 288,7.5 296,14 304,7.5 312,14 320,7.5 328,14 336,7.5 344,14 352,7.5 360,14 368,7.5 376,14 384,7.5 392,14 400,7.5"/>
+    <!-- Left pilaster column strip -->
+    <rect x="0" y="15" width="24" height="193" fill="rgba(184,134,26,0.05)"/>
+    <line x1="24" y1="15" x2="24" y2="208" stroke="rgba(184,134,26,0.38)" stroke-width="1.2"/>
+    <line x1="12" y1="15" x2="12" y2="208" stroke="rgba(184,134,26,0.15)" stroke-width="0.6"/>
+    <!-- Right pilaster column strip -->
+    <rect x="376" y="15" width="24" height="193" fill="rgba(184,134,26,0.05)"/>
+    <line x1="376" y1="15" x2="376" y2="208" stroke="rgba(184,134,26,0.38)" stroke-width="1.2"/>
+    <line x1="388" y1="15" x2="388" y2="208" stroke="rgba(184,134,26,0.15)" stroke-width="0.6"/>
+    <!-- Left small blind arch (flanking) -->
+    <path d="M 24,208 Q 24,172 38,162 Q 52,152 52,208" fill="rgba(184,134,26,0.04)" stroke="rgba(184,134,26,0.38)" stroke-width="1.1"/>
+    <!-- Right small blind arch (flanking) -->
+    <path d="M 376,208 Q 376,172 362,162 Q 348,152 348,208" fill="rgba(184,134,26,0.04)" stroke="rgba(184,134,26,0.38)" stroke-width="1.1"/>
+    <!-- Arch spandrel fill (area outside arch, inside screen) -->
+    <path d="M 52,208 C 52,155 36,120 54,90 C 74,58 122,30 200,16 C 278,30 326,58 346,90 C 364,120 348,155 348,208 Z M 0,0 L 400,0 L 400,208 L 0,208 Z"
+          fill-rule="evenodd" fill="rgba(184,134,26,0.038)"/>
+    <!-- Main keel arch — outer line -->
+    <path d="M 52,208 C 52,155 36,120 54,90 C 74,58 122,30 200,16 C 278,30 326,58 346,90 C 364,120 348,155 348,208"
+          fill="none" stroke="rgba(184,134,26,0.62)" stroke-width="2.2" stroke-linecap="round"/>
+    <!-- Main keel arch — inner decorative ring -->
+    <path d="M 66,208 C 66,160 51,128 67,100 C 87,70 132,46 200,33 C 268,46 313,70 333,100 C 349,128 334,160 334,208"
+          fill="none" stroke="rgba(184,134,26,0.28)" stroke-width="0.9" stroke-linecap="round"/>
+    <!-- Lotus finial at arch apex -->
+    <g transform="translate(200,16)">
+      <line x1="0" y1="0" x2="0" y2="-17" stroke="rgba(184,134,26,0.65)" stroke-width="1.5"/>
+      <path d="M -1,-17 Q -6,-27 0,-35 Q 6,-27 1,-17 Z" fill="rgba(184,134,26,0.28)" stroke="rgba(184,134,26,0.58)" stroke-width="0.9"/>
+      <path d="M -2,-20 Q -12,-23 -13,-17 Q -8,-14 -2,-20 Z" fill="rgba(184,134,26,0.20)" stroke="rgba(184,134,26,0.48)" stroke-width="0.7"/>
+      <path d="M 2,-20 Q 12,-23 13,-17 Q 8,-14 2,-20 Z"  fill="rgba(184,134,26,0.20)" stroke="rgba(184,134,26,0.48)" stroke-width="0.7"/>
+      <path d="M -2,-17 Q -13,-15 -13,-9 Q -8,-12 -2,-17 Z" fill="rgba(184,134,26,0.16)" stroke="rgba(184,134,26,0.40)" stroke-width="0.6"/>
+      <path d="M 2,-17 Q 13,-15 13,-9 Q 8,-12 2,-17 Z"  fill="rgba(184,134,26,0.16)" stroke="rgba(184,134,26,0.40)" stroke-width="0.6"/>
+      <ellipse cx="0" cy="-14" rx="4.5" ry="3" fill="rgba(184,134,26,0.25)" stroke="rgba(184,134,26,0.48)" stroke-width="0.7"/>
+      <circle cx="0" cy="-5" r="1.8" fill="rgba(184,134,26,0.42)"/>
+    </g>
+    <!-- Left spandrel arabesque vines -->
+    <g fill="none" stroke="rgba(155,112,35,0.40)" stroke-width="0.85">
+      <path d="M 28,50 Q 46,62 42,86 Q 38,108 55,126"/>
+      <path d="M 28,50 Q 53,50 64,68"/>
+      <path d="M 42,86 Q 30,77 26,87 Q 32,95 42,86 Z" fill="rgba(155,112,35,0.10)"/>
+      <path d="M 55,126 Q 42,117 38,127 Q 44,135 55,126 Z" fill="rgba(155,112,35,0.10)"/>
+      <circle cx="45" cy="68" r="5.5" fill="rgba(155,112,35,0.11)"/>
+      <path d="M 45,62 Q 39,56 41,51 Q 46,55 45,62 Z" fill="rgba(155,112,35,0.14)"/>
+      <path d="M 45,62 Q 51,56 49,51 Q 44,55 45,62 Z" fill="rgba(155,112,35,0.14)"/>
+      <circle cx="36" cy="102" r="3.5" fill="rgba(155,112,35,0.09)"/>
+    </g>
+    <!-- Right spandrel arabesque vines (mirror) -->
+    <g fill="none" stroke="rgba(155,112,35,0.40)" stroke-width="0.85" transform="scale(-1,1) translate(-400,0)">
+      <path d="M 28,50 Q 46,62 42,86 Q 38,108 55,126"/>
+      <path d="M 28,50 Q 53,50 64,68"/>
+      <path d="M 42,86 Q 30,77 26,87 Q 32,95 42,86 Z" fill="rgba(155,112,35,0.10)"/>
+      <path d="M 55,126 Q 42,117 38,127 Q 44,135 55,126 Z" fill="rgba(155,112,35,0.10)"/>
+      <circle cx="45" cy="68" r="5.5" fill="rgba(155,112,35,0.11)"/>
+      <path d="M 45,62 Q 39,56 41,51 Q 46,55 45,62 Z" fill="rgba(155,112,35,0.14)"/>
+      <path d="M 45,62 Q 51,56 49,51 Q 44,55 45,62 Z" fill="rgba(155,112,35,0.14)"/>
+      <circle cx="36" cy="102" r="3.5" fill="rgba(155,112,35,0.09)"/>
+    </g>
+  </svg>
+
+  <!-- ══ MUGHAL CORNER ORNAMENTS (CSS mirrors TL→TR/BL/BR) ═ -->
+  <svg class="mughal-corner mughal-tl" viewBox="0 0 88 88" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <line x1="0" y1="5" x2="82" y2="5" stroke="rgba(184,134,26,0.52)" stroke-width="1.9"/>
+    <line x1="5" y1="0" x2="5" y2="82" stroke="rgba(184,134,26,0.52)" stroke-width="1.9"/>
+    <line x1="0" y1="11" x2="72" y2="11" stroke="rgba(184,134,26,0.24)" stroke-width="0.7"/>
+    <line x1="11" y1="0" x2="11" y2="72" stroke="rgba(184,134,26,0.24)" stroke-width="0.7"/>
+    <g fill="none" stroke="rgba(184,134,26,0.44)" stroke-width="0.7">
+      <path d="M 17,8 L 22,3 L 27,8 L 22,13 Z M 27,8 L 32,3 L 37,8 L 32,13 Z M 37,8 L 42,3 L 47,8 L 42,13 Z M 47,8 L 52,3 L 57,8 L 52,13 Z M 57,8 L 62,3 L 67,8 L 62,13 Z"/>
+      <path d="M 8,17 L 3,22 L 8,27 L 13,22 Z M 8,27 L 3,32 L 8,37 L 13,32 Z M 8,37 L 3,42 L 8,47 L 13,42 Z M 8,47 L 3,52 L 8,57 L 13,52 Z M 8,57 L 3,62 L 8,67 L 13,62 Z"/>
+    </g>
+    <g transform="translate(5,5)">
+      <path d="M 0,0 Q -7,-5 -5,-12 Q 0,-7 0,0 Z" fill="rgba(184,134,26,0.22)" stroke="rgba(184,134,26,0.48)" stroke-width="0.7"/>
+      <path d="M 0,0 Q 7,-5 5,-12 Q 0,-7 0,0 Z"  fill="rgba(184,134,26,0.22)" stroke="rgba(184,134,26,0.48)" stroke-width="0.7"/>
+      <path d="M 0,0 Q -12,-3 -12,3 Q -7,5 0,0 Z" fill="rgba(184,134,26,0.18)" stroke="rgba(184,134,26,0.40)" stroke-width="0.6"/>
+      <path d="M 0,0 Q -7,5 -5,12 Q 0,7 0,0 Z"   fill="rgba(184,134,26,0.18)" stroke="rgba(184,134,26,0.40)" stroke-width="0.6"/>
+      <path d="M 0,0 Q 7,5 5,12 Q 0,7 0,0 Z"    fill="rgba(184,134,26,0.18)" stroke="rgba(184,134,26,0.40)" stroke-width="0.6"/>
+      <path d="M 0,0 Q 12,-3 12,3 Q 7,5 0,0 Z"   fill="rgba(184,134,26,0.18)" stroke="rgba(184,134,26,0.40)" stroke-width="0.6"/>
+      <circle cx="0" cy="0" r="3.8" fill="rgba(184,134,26,0.28)" stroke="rgba(184,134,26,0.52)" stroke-width="0.7"/>
+      <circle cx="0" cy="0" r="1.7" fill="rgba(184,134,26,0.46)"/>
+    </g>
+    <g fill="none" stroke="rgba(155,112,35,0.34)" stroke-width="0.75">
+      <path d="M 15,15 Q 28,21 26,38 Q 24,52 37,57"/>
+      <path d="M 15,15 Q 21,28 35,26"/>
+      <path d="M 26,38 Q 17,33 16,40 Q 22,42 26,38 Z" fill="rgba(155,112,35,0.10)"/>
+      <path d="M 35,26 Q 33,17 39,17 Q 40,24 35,26 Z" fill="rgba(155,112,35,0.10)"/>
+      <circle cx="28" cy="50" r="2.5" fill="rgba(155,112,35,0.10)"/>
+    </g>
+  </svg>
+  <svg class="mughal-corner mughal-tr" viewBox="0 0 88 88" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <line x1="0" y1="5" x2="82" y2="5" stroke="rgba(184,134,26,0.52)" stroke-width="1.9"/>
+    <line x1="5" y1="0" x2="5" y2="82" stroke="rgba(184,134,26,0.52)" stroke-width="1.9"/>
+    <line x1="0" y1="11" x2="72" y2="11" stroke="rgba(184,134,26,0.24)" stroke-width="0.7"/>
+    <line x1="11" y1="0" x2="11" y2="72" stroke="rgba(184,134,26,0.24)" stroke-width="0.7"/>
+    <g fill="none" stroke="rgba(184,134,26,0.44)" stroke-width="0.7">
+      <path d="M 17,8 L 22,3 L 27,8 L 22,13 Z M 27,8 L 32,3 L 37,8 L 32,13 Z M 37,8 L 42,3 L 47,8 L 42,13 Z M 47,8 L 52,3 L 57,8 L 52,13 Z M 57,8 L 62,3 L 67,8 L 62,13 Z"/>
+      <path d="M 8,17 L 3,22 L 8,27 L 13,22 Z M 8,27 L 3,32 L 8,37 L 13,32 Z M 8,37 L 3,42 L 8,47 L 13,42 Z M 8,47 L 3,52 L 8,57 L 13,52 Z M 8,57 L 3,62 L 8,67 L 13,62 Z"/>
+    </g>
+    <g transform="translate(5,5)">
+      <path d="M 0,0 Q -7,-5 -5,-12 Q 0,-7 0,0 Z" fill="rgba(184,134,26,0.22)" stroke="rgba(184,134,26,0.48)" stroke-width="0.7"/>
+      <path d="M 0,0 Q 7,-5 5,-12 Q 0,-7 0,0 Z"  fill="rgba(184,134,26,0.22)" stroke="rgba(184,134,26,0.48)" stroke-width="0.7"/>
+      <path d="M 0,0 Q -12,-3 -12,3 Q -7,5 0,0 Z" fill="rgba(184,134,26,0.18)" stroke="rgba(184,134,26,0.40)" stroke-width="0.6"/>
+      <path d="M 0,0 Q -7,5 -5,12 Q 0,7 0,0 Z"   fill="rgba(184,134,26,0.18)" stroke="rgba(184,134,26,0.40)" stroke-width="0.6"/>
+      <path d="M 0,0 Q 7,5 5,12 Q 0,7 0,0 Z"    fill="rgba(184,134,26,0.18)" stroke="rgba(184,134,26,0.40)" stroke-width="0.6"/>
+      <path d="M 0,0 Q 12,-3 12,3 Q 7,5 0,0 Z"   fill="rgba(184,134,26,0.18)" stroke="rgba(184,134,26,0.40)" stroke-width="0.6"/>
+      <circle cx="0" cy="0" r="3.8" fill="rgba(184,134,26,0.28)" stroke="rgba(184,134,26,0.52)" stroke-width="0.7"/>
+      <circle cx="0" cy="0" r="1.7" fill="rgba(184,134,26,0.46)"/>
+    </g>
+    <g fill="none" stroke="rgba(155,112,35,0.34)" stroke-width="0.75">
+      <path d="M 15,15 Q 28,21 26,38 Q 24,52 37,57"/>
+      <path d="M 15,15 Q 21,28 35,26"/>
+      <path d="M 26,38 Q 17,33 16,40 Q 22,42 26,38 Z" fill="rgba(155,112,35,0.10)"/>
+      <path d="M 35,26 Q 33,17 39,17 Q 40,24 35,26 Z" fill="rgba(155,112,35,0.10)"/>
+      <circle cx="28" cy="50" r="2.5" fill="rgba(155,112,35,0.10)"/>
+    </g>
+  </svg>
+  <svg class="mughal-corner mughal-bl" viewBox="0 0 88 88" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <line x1="0" y1="5" x2="82" y2="5" stroke="rgba(184,134,26,0.52)" stroke-width="1.9"/>
+    <line x1="5" y1="0" x2="5" y2="82" stroke="rgba(184,134,26,0.52)" stroke-width="1.9"/>
+    <line x1="0" y1="11" x2="72" y2="11" stroke="rgba(184,134,26,0.24)" stroke-width="0.7"/>
+    <line x1="11" y1="0" x2="11" y2="72" stroke="rgba(184,134,26,0.24)" stroke-width="0.7"/>
+    <g fill="none" stroke="rgba(184,134,26,0.44)" stroke-width="0.7">
+      <path d="M 17,8 L 22,3 L 27,8 L 22,13 Z M 27,8 L 32,3 L 37,8 L 32,13 Z M 37,8 L 42,3 L 47,8 L 42,13 Z M 47,8 L 52,3 L 57,8 L 52,13 Z M 57,8 L 62,3 L 67,8 L 62,13 Z"/>
+      <path d="M 8,17 L 3,22 L 8,27 L 13,22 Z M 8,27 L 3,32 L 8,37 L 13,32 Z M 8,37 L 3,42 L 8,47 L 13,42 Z M 8,47 L 3,52 L 8,57 L 13,52 Z M 8,57 L 3,62 L 8,67 L 13,62 Z"/>
+    </g>
+    <g transform="translate(5,5)">
+      <path d="M 0,0 Q -7,-5 -5,-12 Q 0,-7 0,0 Z" fill="rgba(184,134,26,0.22)" stroke="rgba(184,134,26,0.48)" stroke-width="0.7"/>
+      <path d="M 0,0 Q 7,-5 5,-12 Q 0,-7 0,0 Z"  fill="rgba(184,134,26,0.22)" stroke="rgba(184,134,26,0.48)" stroke-width="0.7"/>
+      <path d="M 0,0 Q -12,-3 -12,3 Q -7,5 0,0 Z" fill="rgba(184,134,26,0.18)" stroke="rgba(184,134,26,0.40)" stroke-width="0.6"/>
+      <path d="M 0,0 Q -7,5 -5,12 Q 0,7 0,0 Z"   fill="rgba(184,134,26,0.18)" stroke="rgba(184,134,26,0.40)" stroke-width="0.6"/>
+      <path d="M 0,0 Q 7,5 5,12 Q 0,7 0,0 Z"    fill="rgba(184,134,26,0.18)" stroke="rgba(184,134,26,0.40)" stroke-width="0.6"/>
+      <path d="M 0,0 Q 12,-3 12,3 Q 7,5 0,0 Z"   fill="rgba(184,134,26,0.18)" stroke="rgba(184,134,26,0.40)" stroke-width="0.6"/>
+      <circle cx="0" cy="0" r="3.8" fill="rgba(184,134,26,0.28)" stroke="rgba(184,134,26,0.52)" stroke-width="0.7"/>
+      <circle cx="0" cy="0" r="1.7" fill="rgba(184,134,26,0.46)"/>
+    </g>
+    <g fill="none" stroke="rgba(155,112,35,0.34)" stroke-width="0.75">
+      <path d="M 15,15 Q 28,21 26,38 Q 24,52 37,57"/>
+      <path d="M 15,15 Q 21,28 35,26"/>
+      <path d="M 26,38 Q 17,33 16,40 Q 22,42 26,38 Z" fill="rgba(155,112,35,0.10)"/>
+      <path d="M 35,26 Q 33,17 39,17 Q 40,24 35,26 Z" fill="rgba(155,112,35,0.10)"/>
+      <circle cx="28" cy="50" r="2.5" fill="rgba(155,112,35,0.10)"/>
+    </g>
+  </svg>
+  <svg class="mughal-corner mughal-br" viewBox="0 0 88 88" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <line x1="0" y1="5" x2="82" y2="5" stroke="rgba(184,134,26,0.52)" stroke-width="1.9"/>
+    <line x1="5" y1="0" x2="5" y2="82" stroke="rgba(184,134,26,0.52)" stroke-width="1.9"/>
+    <line x1="0" y1="11" x2="72" y2="11" stroke="rgba(184,134,26,0.24)" stroke-width="0.7"/>
+    <line x1="11" y1="0" x2="11" y2="72" stroke="rgba(184,134,26,0.24)" stroke-width="0.7"/>
+    <g fill="none" stroke="rgba(184,134,26,0.44)" stroke-width="0.7">
+      <path d="M 17,8 L 22,3 L 27,8 L 22,13 Z M 27,8 L 32,3 L 37,8 L 32,13 Z M 37,8 L 42,3 L 47,8 L 42,13 Z M 47,8 L 52,3 L 57,8 L 52,13 Z M 57,8 L 62,3 L 67,8 L 62,13 Z"/>
+      <path d="M 8,17 L 3,22 L 8,27 L 13,22 Z M 8,27 L 3,32 L 8,37 L 13,32 Z M 8,37 L 3,42 L 8,47 L 13,42 Z M 8,47 L 3,52 L 8,57 L 13,52 Z M 8,57 L 3,62 L 8,67 L 13,62 Z"/>
+    </g>
+    <g transform="translate(5,5)">
+      <path d="M 0,0 Q -7,-5 -5,-12 Q 0,-7 0,0 Z" fill="rgba(184,134,26,0.22)" stroke="rgba(184,134,26,0.48)" stroke-width="0.7"/>
+      <path d="M 0,0 Q 7,-5 5,-12 Q 0,-7 0,0 Z"  fill="rgba(184,134,26,0.22)" stroke="rgba(184,134,26,0.48)" stroke-width="0.7"/>
+      <path d="M 0,0 Q -12,-3 -12,3 Q -7,5 0,0 Z" fill="rgba(184,134,26,0.18)" stroke="rgba(184,134,26,0.40)" stroke-width="0.6"/>
+      <path d="M 0,0 Q -7,5 -5,12 Q 0,7 0,0 Z"   fill="rgba(184,134,26,0.18)" stroke="rgba(184,134,26,0.40)" stroke-width="0.6"/>
+      <path d="M 0,0 Q 7,5 5,12 Q 0,7 0,0 Z"    fill="rgba(184,134,26,0.18)" stroke="rgba(184,134,26,0.40)" stroke-width="0.6"/>
+      <path d="M 0,0 Q 12,-3 12,3 Q 7,5 0,0 Z"   fill="rgba(184,134,26,0.18)" stroke="rgba(184,134,26,0.40)" stroke-width="0.6"/>
+      <circle cx="0" cy="0" r="3.8" fill="rgba(184,134,26,0.28)" stroke="rgba(184,134,26,0.52)" stroke-width="0.7"/>
+      <circle cx="0" cy="0" r="1.7" fill="rgba(184,134,26,0.46)"/>
+    </g>
+    <g fill="none" stroke="rgba(155,112,35,0.34)" stroke-width="0.75">
+      <path d="M 15,15 Q 28,21 26,38 Q 24,52 37,57"/>
+      <path d="M 15,15 Q 21,28 35,26"/>
+      <path d="M 26,38 Q 17,33 16,40 Q 22,42 26,38 Z" fill="rgba(155,112,35,0.10)"/>
+      <path d="M 35,26 Q 33,17 39,17 Q 40,24 35,26 Z" fill="rgba(155,112,35,0.10)"/>
+      <circle cx="28" cy="50" r="2.5" fill="rgba(155,112,35,0.10)"/>
+    </g>
+  </svg>
+
   <div class="env-wrap" id="envWrap">
     <div class="env-body">
       <div class="env-flap"></div>
