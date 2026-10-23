@@ -680,14 +680,14 @@ section{padding:80px 24px;max-width:680px;margin:0 auto}
 if (typeof W === 'undefined') {
   var W = {
     id: null,
-    groomAr: 'محمد عبدالله',
-    groomEn: 'Mohammad Abdullah',
-    groomFamilyAr: 'آل الراشد',
-    groomFamilyEn: 'Al-Rashid',
-    brideAr: 'ليلى خالد',
-    brideEn: 'Layla Khalid',
-    brideFamilyAr: 'آل المطيري',
-    brideFamilyEn: 'Al-Mutairi',
+    groomAr: 'محمد عمير',
+    groomEn: 'Muhammad Umair',
+    groomFamilyAr: 'أرشد علي',
+    groomFamilyEn: 'Arshad Ali',
+    brideAr: 'عفيفة مريم',
+    brideEn: 'Afifa Maryam',
+    brideFamilyAr: 'سيف الله سليم',
+    brideFamilyEn: 'Saifullah Saleem',
     contactPhone: '+966500000000',
     rsvpEnabled: true,
     rsvpDeadline: null,
@@ -739,9 +739,9 @@ function renderInvitation() {
 
   // Couple names
   document.getElementById('coupleAr').innerHTML =
-    `${W.groomAr}<br><small style="font-size:0.5em;font-family:var(--ff-ui);font-weight:300;letter-spacing:0.16em;color:var(--text-muted)">${W.groomFamilyAr}</small>`;
+    `${W.groomAr}<br><small style="font-size:0.5em;font-family:var(--ff-ui);font-weight:300;letter-spacing:0.12em;color:var(--text-muted)">نجل السيد والسيدة ${W.groomFamilyAr}</small>`;
   document.getElementById('coupleEn').innerHTML =
-    `${W.groomEn}<br><small style="font-size:0.52em;font-family:var(--ff-ui);font-weight:300;letter-spacing:0.16em;color:var(--text-muted)">${W.groomFamilyEn}</small>`;
+    `${W.brideEn}<br><small style="font-size:0.52em;font-family:var(--ff-ui);font-weight:300;letter-spacing:0.12em;color:var(--text-muted)">Daughter of Mr. & Mrs. ${W.brideFamilyEn}</small>`;
 
   // Hero date — pull from first event if available
   const firstEvent = W.events?.[0];
