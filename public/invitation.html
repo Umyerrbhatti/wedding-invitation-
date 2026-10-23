@@ -152,7 +152,7 @@ body::before{
   position:fixed;inset:0;z-index:0;pointer-events:none;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='rgba(184%2C134%2C26%2C0.07)' stroke-width='0.7'%3E%3Ccircle cx='60' cy='60' r='40'/%3E%3Ccircle cx='60' cy='60' r='28'/%3E%3Cpolygon points='60%2C20 72%2C50 105%2C50 78%2C68 88%2C100 60%2C82 32%2C100 42%2C68 15%2C50 48%2C50'/%3E%3C/g%3E%3C/svg%3E");
 }
-.wrapper{position:relative;z-index:1}
+.wrapper{position:relative;z-index:2}
 
 /* ── LAYOUT ─────────────────────────────────────────────── */
 section{padding:80px 24px;max-width:680px;margin:0 auto}
@@ -273,9 +273,9 @@ section{padding:80px 24px;max-width:680px;margin:0 auto}
   max-width:680px;margin:0 auto;
 }
 .arabic-text{
-  font-family:var(--ff-ar);font-size:clamp(1.1rem,3.2vw,1.5rem);
-  color:var(--text-dark);direction:rtl;line-height:2.1;
-  font-weight:400;
+  font-family:var(--ff-display);font-size:clamp(1.1rem,3.2vw,1.5rem);
+  color:var(--text-dark);direction:ltr;line-height:2.1;
+  font-weight:300;font-style:italic;
 }
 .arabic-text strong{color:var(--gold);font-weight:700}
 
@@ -518,6 +518,14 @@ section{padding:80px 24px;max-width:680px;margin:0 auto}
 </head>
 <body>
 
+<!-- ══ CINEMATIC VIDEO BACKGROUND ════════════════════════════ -->
+<video id="bgVideo" autoplay muted loop playsinline
+  style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:0;transition:opacity 1.8s ease;pointer-events:none">
+</video>
+<div id="bgOverlay"
+  style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(10,8,6,0.55);z-index:1;opacity:0;transition:opacity 1.8s ease;pointer-events:none">
+</div>
+
 <!-- ══ ENVELOPE SCREEN ════════════════════════════════════════ -->
 <div id="envelope-screen">
   <div class="env-wrap" id="envWrap">
@@ -592,7 +600,7 @@ section{padding:80px 24px;max-width:680px;margin:0 auto}
   <!-- COUNTDOWN -->
   <section class="countdown-section scroll-reveal">
     <p class="section-eyebrow">Until the Celebration</p>
-    <p class="countdown-label">La Célébration Commence</p>
+    <p class="countdown-label">The Celebration Begins</p>
     <div class="countdown-grid">
       <div class="cd-unit"><span class="cd-num" id="cd-d">00</span><span class="cd-label">Days</span></div>
       <div class="cd-unit"><span class="cd-num" id="cd-h">00</span><span class="cd-label">Hours</span></div>
@@ -695,6 +703,7 @@ if (typeof W === 'undefined') {
     guestName: null,
     musicUrl: null,
     bgPhotoUrl: null,
+    bgVideoUrl: 'https://d8j0ntlcm91z4.cloudfront.net/user_3IrkHT2Gmwm59NfAgpQ9tE7zGZo/hf_20261023_145739_e5860efe-ee65-498e-a87b-06b045a35ee8.mp4',
     dressCodeColors: [
       {hex:'#D4AF37',name:'Gold'},
       {hex:'#F5F0E8',name:'Ivory'},
@@ -739,7 +748,7 @@ function renderInvitation() {
 
   // Couple names
   document.getElementById('coupleAr').innerHTML =
-    `${W.groomAr}<br><small style="font-size:0.5em;font-family:var(--ff-ui);font-weight:300;letter-spacing:0.12em;color:var(--text-muted)">نجل السيد والسيدة ${W.groomFamilyAr}</small>`;
+    `${W.groomEn}<br><small style="font-size:0.52em;font-family:var(--ff-ui);font-weight:300;letter-spacing:0.12em;color:var(--text-muted)">Son of Mr. & Mrs. ${W.groomFamilyEn}</small>`;
   document.getElementById('coupleEn').innerHTML =
     `${W.brideEn}<br><small style="font-size:0.52em;font-family:var(--ff-ui);font-weight:300;letter-spacing:0.12em;color:var(--text-muted)">Daughter of Mr. & Mrs. ${W.brideFamilyEn}</small>`;
 
@@ -751,12 +760,12 @@ function renderInvitation() {
       d.toLocaleDateString('en-SA',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   }
 
-  // Arabic invitation text
+  // Invitation text
   document.getElementById('arabicText').innerHTML =
-    `يُسعد عائلة <strong>${W.groomFamilyAr}</strong><br>` +
-    `وعائلة <strong>${W.brideFamilyAr}</strong><br>` +
-    `بدعوتكم لحضور حفل زفاف<br>` +
-    `<strong>${W.groomAr}</strong> و <strong>${W.brideAr}</strong>`;
+    `The families of <strong>${W.groomFamilyEn}</strong><br>` +
+    `and <strong>${W.brideFamilyEn}</strong><br>` +
+    `joyfully invite you to the wedding celebration of<br>` +
+    `<strong>${W.groomEn}</strong> &amp; <strong>${W.brideEn}</strong>`;
 
   // Timeline — use W.timeline if available, else build from events
   const tlGrid = document.getElementById('timelineGrid');
@@ -768,13 +777,12 @@ function renderInvitation() {
     <div class="tl-item">
       <div class="tl-time">${t.time}</div>
       <div class="tl-label">${t.label}</div>
-      <div class="tl-desc">${t.descAr || ''}</div>
     </div>
   `).join('');
 
   // Venue
   const v = W.venue || {};
-  document.getElementById('venueAr').textContent = v.nameAr || '';
+  document.getElementById('venueAr').style.display = 'none';
   document.getElementById('venueEn').textContent = v.nameEn || '';
   document.getElementById('venueAddress').textContent = v.address || '';
   const mapBtns = document.getElementById('mapButtons');
@@ -926,6 +934,17 @@ function openEnvelope() {
   if (_envelopeOpened) return;
   _envelopeOpened = true;
   envWrap.classList.add('opening');
+  // Start cinematic background video
+  var bgVideo = document.getElementById('bgVideo');
+  var bgOverlay = document.getElementById('bgOverlay');
+  if (W.bgVideoUrl && bgVideo) {
+    bgVideo.src = W.bgVideoUrl;
+    bgVideo.play().catch(function(){});
+    bgVideo.addEventListener('canplay', function() {
+      bgVideo.style.opacity = '1';
+      bgOverlay.style.opacity = '1';
+    }, {once: true});
+  }
   setTimeout(function() {
     envScreen.classList.add('opened');
     invitation.style.display = '';
