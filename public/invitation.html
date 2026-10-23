@@ -920,27 +920,52 @@ document.getElementById('waShareBtn').addEventListener('click', () => track('wa_
 const envScreen = document.getElementById('envelope-screen');
 const envWrap   = document.getElementById('envWrap');
 const invitation = document.getElementById('invitation');
+let _envelopeOpened = false;
 
 function openEnvelope() {
+  if (_envelopeOpened) return;
+  _envelopeOpened = true;
   envWrap.classList.add('opening');
-  setTimeout(() => {
+  setTimeout(function() {
     envScreen.classList.add('opened');
     invitation.style.display = '';
     document.body.style.overflow = '';
+    // Re-wire scroll-reveal: elements were inside display:none so IntersectionObserver
+    // never fired. Switch to a scroll listener that's immune to async timing issues.
+    setTimeout(function() {
+      observer.disconnect();
+      function checkReveal() {
+        var remaining = document.querySelectorAll('.scroll-reveal:not(.visible)');
+        remaining.forEach(function(el) {
+          var r = el.getBoundingClientRect();
+          if (r.top < window.innerHeight * 0.92 && r.bottom > 0) {
+            el.classList.add('visible');
+          }
+        });
+        if (!document.querySelector('.scroll-reveal:not(.visible)')) {
+          window.removeEventListener('scroll', checkReveal);
+        }
+      }
+      checkReveal();
+      window.addEventListener('scroll', checkReveal);
+    }, 60);
     updateCountdown();
     track('view');
   }, 900);
 }
 
 envScreen.addEventListener('click', openEnvelope);
-envScreen.addEventListener('touchend', function(e){ e.preventDefault(); openEnvelope(); }, {once: true, passive: false});
+envScreen.addEventListener('touchstart', function(e) {
+  e.preventDefault();
+  openEnvelope();
+}, { passive: false });
 document.body.style.overflow = 'hidden';
 
 /* ── Scroll reveal ───────────────────────────────────── */
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, {threshold: 0.15});
-document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('.scroll-reveal').forEach(function(el) { observer.observe(el); });
 
 /* ── Init ────────────────────────────────────────────── */
 renderInvitation();
