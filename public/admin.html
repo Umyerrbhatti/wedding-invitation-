@@ -5,9 +5,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Naskh+Arabic:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-/* =========================================================
-   TOKENS — light-first, proper dark mode
-   ========================================================= */
 :root {
   --bg:          #FAFAF9;
   --bg-2:        #F4F3F0;
@@ -15,491 +12,122 @@
   --bg-sidebar:  #0F1624;
   --border:      #E2DEDA;
   --border-mid:  #C9C4BC;
-
   --gold:        #B8861A;
   --gold-light:  #F5E9C6;
   --gold-mid:    #D4A83A;
-
   --text:        #1A1714;
   --text-mid:    #6B6459;
   --text-muted:  #9C9590;
   --text-inv:    #F0EAE0;
-
   --green:       #1C7A3A;
   --green-bg:    #E6F4EC;
   --red:         #B02020;
   --red-bg:      #FDEAEA;
   --amber:       #8A5A00;
   --amber-bg:    #FFF3D6;
-
   --ff:          'Inter', system-ui, sans-serif;
   --ff-ar:       'Noto Naskh Arabic', serif;
-
   --shadow-sm:   0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
   --shadow:      0 4px 12px rgba(0,0,0,.09), 0 1px 3px rgba(0,0,0,.06);
 }
-
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg:         #141210;
-    --bg-2:       #1C1916;
-    --bg-card:    #211E1A;
-    --bg-sidebar: #0A0D16;
-    --border:     #2E2A25;
-    --border-mid: #3D3830;
-    --text:       #EDE8E0;
-    --text-mid:   #A09890;
-    --text-muted: #6A6460;
-    --gold:       #C9A038;
-    --gold-light: #2A2214;
-    --shadow-sm:  0 1px 3px rgba(0,0,0,.3);
-    --shadow:     0 4px 12px rgba(0,0,0,.35);
+    --bg:#141210;--bg-2:#1C1916;--bg-card:#211E1A;--bg-sidebar:#0A0D16;
+    --border:#2E2A25;--border-mid:#3D3830;--text:#EDE8E0;--text-mid:#A09890;
+    --text-muted:#6A6460;--gold:#C9A038;--gold-light:#2A2214;
+    --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow:0 4px 12px rgba(0,0,0,.35);
   }
 }
 :root[data-theme="dark"] {
-  --bg:         #141210;
-  --bg-2:       #1C1916;
-  --bg-card:    #211E1A;
-  --bg-sidebar: #0A0D16;
-  --border:     #2E2A25;
-  --border-mid: #3D3830;
-  --text:       #EDE8E0;
-  --text-mid:   #A09890;
-  --text-muted: #6A6460;
-  --gold:       #C9A038;
-  --gold-light: #2A2214;
-  --shadow-sm:  0 1px 3px rgba(0,0,0,.3);
-  --shadow:     0 4px 12px rgba(0,0,0,.35);
+  --bg:#141210;--bg-2:#1C1916;--bg-card:#211E1A;--bg-sidebar:#0A0D16;
+  --border:#2E2A25;--border-mid:#3D3830;--text:#EDE8E0;--text-mid:#A09890;
+  --text-muted:#6A6460;--gold:#C9A038;--gold-light:#2A2214;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow:0 4px 12px rgba(0,0,0,.35);
 }
-
-/* =========================================================
-   RESET & BASE
-   ========================================================= */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { height: 100%; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--ff);
-  font-size: 14px;
-  line-height: 1.6;
-  height: 100%;
-  display: flex;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* =========================================================
-   LAYOUT
-   ========================================================= */
-.sidebar {
-  width: 240px;
-  flex-shrink: 0;
-  background: var(--bg-sidebar);
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  position: sticky;
-  top: 0;
-  overflow-y: auto;
-}
-.main {
-  flex: 1;
-  overflow-y: auto;
-  height: 100vh;
-  padding: 32px;
-}
-@media (max-width: 768px) {
-  body { flex-direction: column; }
-  .sidebar { width: 100%; height: auto; position: static; flex-direction: row; overflow-x: auto; }
-  .main { height: auto; padding: 20px 16px; }
-}
-
-/* =========================================================
-   SIDEBAR
-   ========================================================= */
-.sidebar-header {
-  padding: 24px 20px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-.sidebar-logo {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #C9A038;
-  letter-spacing: 0.04em;
-}
-.sidebar-sub {
-  font-size: 0.72rem;
-  color: rgba(240,234,224,0.4);
-  margin-top: 2px;
-  font-weight: 300;
-}
-.nav { padding: 16px 12px; flex: 1; }
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  border-radius: 6px;
-  color: rgba(240,234,224,0.55);
-  font-size: 0.82rem;
-  font-weight: 400;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-  border: none;
-  background: none;
-  width: 100%;
-  text-align: left;
-}
-.nav-item:hover  { background: rgba(255,255,255,0.06); color: rgba(240,234,224,0.9); }
-.nav-item.active { background: rgba(201,160,56,0.15); color: #C9A038; }
-.nav-item svg { flex-shrink: 0; opacity: 0.7; }
-.nav-item.active svg { opacity: 1; }
-.nav-section {
-  font-size: 0.6rem;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(240,234,224,0.25);
-  padding: 16px 12px 6px;
-}
-
-/* =========================================================
-   PAGE STRUCTURE
-   ========================================================= */
-.page { display: none; }
-.page.active { display: block; }
-
-.page-header { margin-bottom: 28px; }
-.page-title {
-  font-size: 1.35rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-.page-desc {
-  font-size: 0.82rem;
-  color: var(--text-mid);
-  margin-top: 4px;
-}
-
-/* =========================================================
-   STAT CARDS
-   ========================================================= */
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 14px;
-  margin-bottom: 28px;
-}
-.stat-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 18px 20px;
-  box-shadow: var(--shadow-sm);
-}
-.stat-num {
-  font-size: 1.8rem;
-  font-weight: 600;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.03em;
-  margin-bottom: 6px;
-}
-.stat-lbl {
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-.stat-card.green .stat-num { color: var(--green); }
-.stat-card.amber .stat-num { color: var(--amber); }
-.stat-card.gold  .stat-num { color: var(--gold); }
-
-/* =========================================================
-   TABLE
-   ========================================================= */
-.table-wrap {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-}
-.table-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--border);
-}
-.table-title {
-  font-size: 0.82rem;
-  font-weight: 600;
-}
-.table-count {
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  background: var(--bg-2);
-  padding: 2px 8px;
-  border-radius: 20px;
-}
-.tbl {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.82rem;
-}
-.tbl th {
-  text-align: left;
-  padding: 10px 20px;
-  font-size: 0.68rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-  background: var(--bg-2);
-  border-bottom: 1px solid var(--border);
-  white-space: nowrap;
-}
-.tbl td {
-  padding: 12px 20px;
-  border-bottom: 1px solid var(--border);
-  vertical-align: middle;
-}
-.tbl tr:last-child td { border-bottom: none; }
-.tbl tr:hover td { background: var(--bg-2); }
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 9px;
-  border-radius: 20px;
-  font-size: 0.7rem;
-  font-weight: 500;
-}
-.badge.yes   { background: var(--green-bg); color: var(--green); }
-.badge.no    { background: var(--red-bg);   color: var(--red); }
-.badge.pend  { background: var(--amber-bg); color: var(--amber); }
-.badge.green { background: var(--green-bg); color: var(--green); }
-
-/* =========================================================
-   FORMS
-   ========================================================= */
-.card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 24px 28px;
-  box-shadow: var(--shadow-sm);
-  margin-bottom: 20px;
-}
-.card-title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-bottom: 20px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--border);
-}
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-@media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
-.form-group { display: flex; flex-direction: column; gap: 6px; }
-.form-group.full { grid-column: 1 / -1; }
-.form-group label {
-  font-size: 0.72rem;
-  font-weight: 500;
-  color: var(--text-mid);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-.form-group input,
-.form-group select,
-.form-group textarea {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  padding: 8px 12px;
-  color: var(--text);
-  font-family: var(--ff);
-  font-size: 0.85rem;
-  outline: none;
-  transition: border-color 0.2s;
-}
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 2px rgba(201,160,56,0.12);
-}
-.form-group textarea { min-height: 80px; resize: vertical; }
-.ar-input { direction: rtl; font-family: var(--ff-ar); font-size: 1rem; }
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 18px;
-  border-radius: 5px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: all 0.2s;
-  font-family: var(--ff);
-}
-.btn-primary { background: var(--gold); color: #fff; }
-.btn-primary:hover { background: var(--gold-mid); }
-.btn-outline {
-  background: transparent;
-  border-color: var(--border-mid);
-  color: var(--text-mid);
-}
-.btn-outline:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-light); }
-.btn-danger { background: var(--red-bg); color: var(--red); border-color: transparent; }
-.btn-row { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
-
-/* =========================================================
-   LINK SECTION
-   ========================================================= */
-.share-box {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 20px 24px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-.share-url {
-  flex: 1;
-  font-family: monospace;
-  font-size: 0.82rem;
-  color: var(--text-mid);
-  background: var(--bg-2);
-  padding: 8px 12px;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.copy-btn {
-  padding: 8px 16px;
-  background: var(--gold);
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.78rem;
-  font-weight: 500;
-  transition: background 0.2s;
-  flex-shrink: 0;
-  font-family: var(--ff);
-}
-.copy-btn:hover { background: var(--gold-mid); }
-
-/* =========================================================
-   TOAST
-   ========================================================= */
-.toast-container {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  z-index: 999;
-}
-.toast {
-  background: #1A1714;
-  color: #EDE8E0;
-  padding: 10px 18px;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,.3);
-  animation: toastIn 0.25s ease;
-  max-width: 300px;
-}
-.toast.success { border-left: 3px solid #2A8A4A; }
-.toast.error   { border-left: 3px solid #B02020; }
-@keyframes toastIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* =========================================================
-   LOGIN
-   ========================================================= */
-.login-overlay {
-  position: fixed;
-  inset: 0;
-  background: var(--bg-sidebar);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-.login-box {
-  background: #151E30;
-  border: 1px solid rgba(201,160,56,0.2);
-  border-radius: 10px;
-  padding: 44px 40px;
-  width: 100%;
-  max-width: 360px;
-  text-align: center;
-}
-.login-logo { color: #C9A038; font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
-.login-sub  { color: rgba(240,234,224,0.4); font-size: 0.78rem; margin-bottom: 32px; }
-.login-inp  {
-  width: 100%;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 5px;
-  padding: 12px 14px;
-  color: #EDE8E0;
-  font-family: var(--ff);
-  font-size: 0.9rem;
-  outline: none;
-  margin-bottom: 14px;
-  transition: border-color 0.2s;
-}
-.login-inp:focus { border-color: rgba(201,160,56,0.6); }
-.login-btn {
-  width: 100%;
-  padding: 12px;
-  background: #C9A038;
-  color: #0A0D16;
-  border: none;
-  border-radius: 5px;
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: var(--ff);
-  transition: background 0.2s;
-}
-.login-btn:hover { background: #DEB84A; }
-.login-err { color: #E07070; font-size: 0.78rem; margin-top: 10px; min-height: 1.4em; }
-
-/* =========================================================
-   EMPTY STATE
-   ========================================================= */
-.empty {
-  text-align: center;
-  padding: 48px 20px;
-  color: var(--text-muted);
-  font-size: 0.85rem;
-}
-.empty svg { opacity: 0.2; margin-bottom: 12px; }
-
-/* =========================================================
-   OVERFLOW PROTECTION
-   ========================================================= */
-.tbl-container { overflow-x: auto; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--ff);font-size:14px;line-height:1.6;height:100%;display:flex;-webkit-font-smoothing:antialiased}
+.sidebar{width:240px;flex-shrink:0;background:var(--bg-sidebar);display:flex;flex-direction:column;height:100vh;position:sticky;top:0;overflow-y:auto}
+.main{flex:1;overflow-y:auto;height:100vh;padding:32px}
+@media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:auto;position:static;flex-direction:row;overflow-x:auto}.main{height:auto;padding:20px 16px}}
+.sidebar-header{padding:24px 20px 20px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.sidebar-logo{font-size:1rem;font-weight:600;color:#C9A038;letter-spacing:0.04em}
+.sidebar-sub{font-size:0.72rem;color:rgba(240,234,224,0.4);margin-top:2px;font-weight:300}
+.nav{padding:16px 12px;flex:1}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:6px;color:rgba(240,234,224,0.55);font-size:0.82rem;font-weight:400;cursor:pointer;transition:background 0.15s,color 0.15s;border:none;background:none;width:100%;text-align:left}
+.nav-item:hover{background:rgba(255,255,255,0.06);color:rgba(240,234,224,0.9)}
+.nav-item.active{background:rgba(201,160,56,0.15);color:#C9A038}
+.nav-item svg{flex-shrink:0;opacity:0.7}
+.nav-item.active svg{opacity:1}
+.nav-section{font-size:0.6rem;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:rgba(240,234,224,0.25);padding:16px 12px 6px}
+.page{display:none}
+.page.active{display:block}
+.page-header{margin-bottom:28px}
+.page-title{font-size:1.35rem;font-weight:600;letter-spacing:-0.02em}
+.page-desc{font-size:0.82rem;color:var(--text-mid);margin-top:4px}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-bottom:28px}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:18px 20px;box-shadow:var(--shadow-sm)}
+.stat-num{font-size:1.8rem;font-weight:600;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-0.03em;margin-bottom:6px}
+.stat-lbl{font-size:0.72rem;color:var(--text-muted);font-weight:400;text-transform:uppercase;letter-spacing:0.08em}
+.stat-card.green .stat-num{color:var(--green)}
+.stat-card.amber .stat-num{color:var(--amber)}
+.stat-card.gold  .stat-num{color:var(--gold)}
+.table-wrap{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow-sm);overflow:hidden}
+.table-head{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border)}
+.table-title{font-size:0.82rem;font-weight:600}
+.table-count{font-size:0.72rem;color:var(--text-muted);background:var(--bg-2);padding:2px 8px;border-radius:20px}
+.tbl{width:100%;border-collapse:collapse;font-size:0.82rem}
+.tbl th{text-align:left;padding:10px 20px;font-size:0.68rem;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);background:var(--bg-2);border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl td{padding:12px 20px;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--bg-2)}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:0.7rem;font-weight:500}
+.badge.yes{background:var(--green-bg);color:var(--green)}
+.badge.no{background:var(--red-bg);color:var(--red)}
+.badge.pend{background:var(--amber-bg);color:var(--amber)}
+.badge.green{background:var(--green-bg);color:var(--green)}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:24px 28px;box-shadow:var(--shadow-sm);margin-bottom:20px}
+.card-title{font-size:0.9rem;font-weight:600;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group.full{grid-column:1/-1}
+.form-group label{font-size:0.72rem;font-weight:500;color:var(--text-mid);text-transform:uppercase;letter-spacing:0.08em}
+.form-group input,.form-group select,.form-group textarea{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:8px 12px;color:var(--text);font-family:var(--ff);font-size:0.85rem;outline:none;transition:border-color 0.2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,160,56,0.12)}
+.form-group textarea{min-height:80px;resize:vertical}
+.ar-input{direction:rtl;font-family:var(--ff-ar);font-size:1rem}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:5px;font-size:0.8rem;font-weight:500;cursor:pointer;border:1px solid transparent;transition:all 0.2s;font-family:var(--ff)}
+.btn-primary{background:var(--gold);color:#fff}
+.btn-primary:hover{background:var(--gold-mid)}
+.btn-outline{background:transparent;border-color:var(--border-mid);color:var(--text-mid)}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-light)}
+.btn-danger{background:var(--red-bg);color:var(--red);border-color:transparent}
+.btn-row{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.share-box{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:20px 24px;display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.share-url{flex:1;font-family:monospace;font-size:0.82rem;color:var(--text-mid);background:var(--bg-2);padding:8px 12px;border-radius:4px;border:1px solid var(--border);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.copy-btn{padding:8px 16px;background:var(--gold);color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:0.78rem;font-weight:500;transition:background 0.2s;flex-shrink:0;font-family:var(--ff)}
+.copy-btn:hover{background:var(--gold-mid)}
+.toast-container{position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;gap:8px;z-index:999}
+.toast{background:#1A1714;color:#EDE8E0;padding:10px 18px;border-radius:6px;font-size:0.8rem;box-shadow:0 4px 12px rgba(0,0,0,.3);animation:toastIn 0.25s ease;max-width:300px}
+.toast.success{border-left:3px solid #2A8A4A}
+.toast.error{border-left:3px solid #B02020}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.login-overlay{position:fixed;inset:0;background:var(--bg-sidebar);display:flex;align-items:center;justify-content:center;z-index:100}
+.login-box{background:#151E30;border:1px solid rgba(201,160,56,0.2);border-radius:10px;padding:44px 40px;width:100%;max-width:360px;text-align:center}
+.login-logo{color:#C9A038;font-size:1.1rem;font-weight:600;margin-bottom:8px}
+.login-sub{color:rgba(240,234,224,0.4);font-size:0.78rem;margin-bottom:32px}
+.login-inp{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:5px;padding:12px 14px;color:#EDE8E0;font-family:var(--ff);font-size:0.9rem;outline:none;margin-bottom:14px;transition:border-color 0.2s}
+.login-inp:focus{border-color:rgba(201,160,56,0.6)}
+.login-btn{width:100%;padding:12px;background:#C9A038;color:#0A0D16;border:none;border-radius:5px;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:var(--ff);transition:background 0.2s}
+.login-btn:hover{background:#DEB84A}
+.login-err{color:#E07070;font-size:0.78rem;margin-top:10px;min-height:1.4em}
+.empty{text-align:center;padding:48px 20px;color:var(--text-muted);font-size:0.85rem}
+.tbl-container{overflow-x:auto}
+.loading{opacity:0.5;font-style:italic}
+.status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px}
+.status-dot.live{background:#2A8A4A}
+.status-dot.offline{background:#B02020}
 </style>
 
 <!-- LOGIN OVERLAY -->
@@ -510,9 +138,6 @@ body {
     <input class="login-inp" type="password" id="login-pw" placeholder="Admin password" autocomplete="current-password">
     <button class="login-btn" onclick="doLogin()">Sign In</button>
     <p class="login-err" id="login-err"></p>
-    <p style="font-size:0.7rem;color:rgba(240,234,224,0.25);margin-top:20px">
-      Demo mode: any password works
-    </p>
   </div>
 </div>
 
@@ -520,315 +145,232 @@ body {
 <aside class="sidebar">
   <div class="sidebar-header">
     <div class="sidebar-logo">💍 Wedding Admin</div>
-    <div class="sidebar-sub">Invitation Platform</div>
+    <div class="sidebar-sub" id="sidebar-couple">Invitation Platform</div>
   </div>
   <nav class="nav" aria-label="Main navigation">
     <p class="nav-section">Overview</p>
     <button class="nav-item active" onclick="nav('dashboard')" aria-current="page">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       Dashboard
     </button>
     <p class="nav-section">Invitation</p>
     <button class="nav-item" onclick="nav('details')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
       Edit Details
     </button>
     <button class="nav-item" onclick="nav('events')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
       Events
     </button>
     <p class="nav-section">Guests</p>
     <button class="nav-item" onclick="nav('rsvps')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
       RSVPs <span id="rsvp-badge" style="background:rgba(201,160,56,.2);color:#C9A038;padding:1px 7px;border-radius:20px;font-size:.68rem;margin-left:auto"></span>
     </button>
     <button class="nav-item" onclick="nav('send')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.0 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 010 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
       Send Invitations
     </button>
     <p class="nav-section">Sharing</p>
     <button class="nav-item" onclick="nav('share')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51L8.59 10.49"/></svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51L8.59 10.49"/></svg>
       Share &amp; Links
     </button>
   </nav>
+  <div style="padding:16px;border-top:1px solid rgba(255,255,255,0.06)">
+    <div style="display:flex;align-items:center;gap:8px;font-size:0.72rem;color:rgba(240,234,224,0.35)">
+      <span class="status-dot" id="api-dot" style="background:#555"></span>
+      <span id="api-status">Connecting…</span>
+    </div>
+  </div>
 </aside>
 
 <!-- MAIN -->
 <main class="main">
 
-  <!-- DASHBOARD -->
+  <!-- ── DASHBOARD ── -->
   <div class="page active" id="page-dashboard">
     <div class="page-header">
       <h1 class="page-title">Dashboard</h1>
-      <p class="page-desc">Mohammad &amp; Layla — November 12–13, 2026</p>
+      <p class="page-desc" id="dash-desc">Loading…</p>
     </div>
-
     <div class="stats-row" id="stats-row">
-      <div class="stat-card">
-        <div class="stat-num" id="s-views">—</div>
-        <div class="stat-lbl">Page Views</div>
-      </div>
-      <div class="stat-card green">
-        <div class="stat-num" id="s-attending">—</div>
-        <div class="stat-lbl">Attending</div>
-      </div>
-      <div class="stat-card amber">
-        <div class="stat-num" id="s-declining">—</div>
-        <div class="stat-lbl">Declining</div>
-      </div>
-      <div class="stat-card gold">
-        <div class="stat-num" id="s-seats">—</div>
-        <div class="stat-lbl">Total Seats</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num" id="s-calAdds">—</div>
-        <div class="stat-lbl">Calendar Saves</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num" id="s-shares">—</div>
-        <div class="stat-lbl">WA Shares</div>
-      </div>
+      <div class="stat-card"><div class="stat-num" id="s-views">—</div><div class="stat-lbl">Page Views</div></div>
+      <div class="stat-card green"><div class="stat-num" id="s-attending">—</div><div class="stat-lbl">Attending</div></div>
+      <div class="stat-card amber"><div class="stat-num" id="s-declining">—</div><div class="stat-lbl">Declining</div></div>
+      <div class="stat-card gold"><div class="stat-num" id="s-seats">—</div><div class="stat-lbl">Total Seats</div></div>
+      <div class="stat-card"><div class="stat-num" id="s-calAdds">—</div><div class="stat-lbl">Calendar Saves</div></div>
+      <div class="stat-card"><div class="stat-num" id="s-shares">—</div><div class="stat-lbl">WA Shares</div></div>
     </div>
-
     <div class="table-wrap">
       <div class="table-head">
         <span class="table-title">Recent RSVPs</span>
         <span class="table-count" id="recent-count">0</span>
       </div>
       <div class="tbl-container">
-        <table class="tbl" aria-label="Recent RSVP responses">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Response</th>
-              <th>Seats</th>
-              <th>Message</th>
-              <th>Submitted</th>
-            </tr>
-          </thead>
-          <tbody id="rsvp-recent-body">
-            <tr><td colspan="5" class="empty">Loading…</td></tr>
-          </tbody>
+        <table class="tbl">
+          <thead><tr><th>Name</th><th>Response</th><th>Seats</th><th>Message</th><th>Submitted</th></tr></thead>
+          <tbody id="rsvp-recent-body"><tr><td colspan="5" class="empty loading">Loading…</td></tr></tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- EDIT DETAILS -->
+  <!-- ── EDIT DETAILS ── -->
   <div class="page" id="page-details">
     <div class="page-header">
       <h1 class="page-title">Edit Invitation</h1>
-      <p class="page-desc">Changes take effect immediately on the live invitation page</p>
+      <p class="page-desc">Changes are saved to the database and take effect immediately</p>
     </div>
-
     <form id="details-form" onsubmit="saveDetails(event)">
+
       <div class="card">
         <p class="card-title">Groom · العريس</p>
         <div class="form-grid">
-          <div class="form-group">
-            <label>Name (English)</label>
-            <input type="text" id="f-groom-en" placeholder="Mohammad Abdullah">
-          </div>
-          <div class="form-group">
-            <label>Name (Arabic)</label>
-            <input type="text" class="ar-input" id="f-groom-ar" placeholder="محمد عبدالله">
-          </div>
-          <div class="form-group">
-            <label>Family Name (English)</label>
-            <input type="text" id="f-groomfam-en" placeholder="Al-Rashid">
-          </div>
-          <div class="form-group">
-            <label>Family Name (Arabic)</label>
-            <input type="text" class="ar-input" id="f-groomfam-ar" placeholder="آل الراشد">
-          </div>
+          <div class="form-group"><label>Name (English)</label><input type="text" id="f-groom-en" placeholder="Mohammad Abdullah"></div>
+          <div class="form-group"><label>Name (Arabic)</label><input type="text" class="ar-input" id="f-groom-ar" placeholder="محمد عبدالله"></div>
+          <div class="form-group"><label>Family Name (English)</label><input type="text" id="f-groomfam-en" placeholder="Al-Rashid"></div>
+          <div class="form-group"><label>Family Name (Arabic)</label><input type="text" class="ar-input" id="f-groomfam-ar" placeholder="آل الراشد"></div>
         </div>
       </div>
 
       <div class="card">
         <p class="card-title">Bride · العروسة</p>
         <div class="form-grid">
-          <div class="form-group">
-            <label>Name (English)</label>
-            <input type="text" id="f-bride-en" placeholder="Layla Khalid">
-          </div>
-          <div class="form-group">
-            <label>Name (Arabic)</label>
-            <input type="text" class="ar-input" id="f-bride-ar" placeholder="ليلى خالد">
-          </div>
-          <div class="form-group">
-            <label>Family Name (English)</label>
-            <input type="text" id="f-bridefam-en" placeholder="Al-Mutairi">
-          </div>
-          <div class="form-group">
-            <label>Family Name (Arabic)</label>
-            <input type="text" class="ar-input" id="f-bridefam-ar" placeholder="آل المطيري">
-          </div>
+          <div class="form-group"><label>Name (English)</label><input type="text" id="f-bride-en" placeholder="Layla Khalid"></div>
+          <div class="form-group"><label>Name (Arabic)</label><input type="text" class="ar-input" id="f-bride-ar" placeholder="ليلى خالد"></div>
+          <div class="form-group"><label>Family Name (English)</label><input type="text" id="f-bridefam-en" placeholder="Al-Mutairi"></div>
+          <div class="form-group"><label>Family Name (Arabic)</label><input type="text" class="ar-input" id="f-bridefam-ar" placeholder="آل المطيري"></div>
         </div>
       </div>
 
       <div class="card">
-        <p class="card-title">RSVP Settings</p>
+        <p class="card-title">Contact &amp; RSVP Settings</p>
         <div class="form-grid">
-          <div class="form-group">
-            <label>RSVP Deadline</label>
-            <input type="date" id="f-rsvp-deadline">
-          </div>
-          <div class="form-group">
-            <label>Max Guests Per RSVP</label>
-            <input type="number" id="f-max-guests" min="1" max="20" value="6">
-          </div>
-          <div class="form-group">
-            <label>Contact Phone</label>
-            <input type="tel" id="f-phone" placeholder="+966 50 000 0000">
-          </div>
-          <div class="form-group">
-            <label>Contact Email</label>
-            <input type="email" id="f-email" placeholder="wedding@family.com">
-          </div>
+          <div class="form-group"><label>RSVP Deadline</label><input type="date" id="f-rsvp-deadline"></div>
+          <div class="form-group"><label>Max Guests Per RSVP</label><input type="number" id="f-max-guests" min="1" max="20" value="6"></div>
+          <div class="form-group"><label>Contact Phone</label><input type="tel" id="f-phone" placeholder="+966 50 000 0000"></div>
+          <div class="form-group"><label>Contact Email</label><input type="email" id="f-email" placeholder="wedding@family.com"></div>
         </div>
       </div>
 
       <div class="card">
         <p class="card-title">Media</p>
         <div class="form-grid">
-          <div class="form-group">
-            <label>Background Music URL</label>
-            <input type="url" id="f-music-url" placeholder="https://example.com/music.mp3">
-          </div>
-          <div class="form-group">
-            <label>Background Photo URL</label>
-            <input type="url" id="f-bg-photo" placeholder="https://example.com/venue.jpg">
-          </div>
+          <div class="form-group"><label>Background Music URL</label><input type="url" id="f-music-url" placeholder="https://example.com/music.mp3"></div>
+          <div class="form-group"><label>Background Photo URL</label><input type="url" id="f-bg-photo" placeholder="https://example.com/venue.jpg"></div>
         </div>
       </div>
 
       <div class="card">
-        <p class="card-title">Event Timeline</p>
-        <p style="font-size:.78rem;color:var(--text-muted);margin-bottom:12px">Format: one entry per line as <code style="font-size:.76rem;background:var(--bg-2);padding:1px 4px;border-radius:3px">HH:MM | Label | Arabic</code></p>
-        <textarea id="f-timeline" rows="5" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg-2);font-size:.82rem;color:var(--text);resize:vertical;font-family:var(--ff)" placeholder="16:00 | Welcome Reception | الاستقبال
-17:00 | Nikah Ceremony | عقد القران
-19:00 | Dinner | العشاء
-20:00 | Celebration | الاحتفال"></textarea>
-      </div>
-
-      <div class="card">
-        <p class="card-title">Dress Code Colors</p>
-        <p style="font-size:.78rem;color:var(--text-muted);margin-bottom:12px">Format: one per line as <code style="font-size:.76rem;background:var(--bg-2);padding:1px 4px;border-radius:3px">#HEXCOLOR | Name</code></p>
-        <textarea id="f-dress-colors" rows="6" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg-2);font-size:.82rem;color:var(--text);resize:vertical;font-family:var(--ff)" placeholder="#D4AF37 | Gold
-#F5F0E8 | Ivory
-#8B4A4A | Rose
-#2C4A3E | Forest
-#1A1A2E | Midnight"></textarea>
-        <div id="color-preview" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px"></div>
+        <p class="card-title">Event Timeline (displayed on invitation)</p>
+        <p style="font-size:.78rem;color:var(--text-muted);margin-bottom:12px">One entry per line: <code style="font-size:.76rem;background:var(--bg-2);padding:1px 4px;border-radius:3px">HH:MM | Label | Arabic</code></p>
+        <textarea id="f-timeline" rows="5" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg-2);font-size:.82rem;color:var(--text);resize:vertical;font-family:var(--ff)" placeholder="16:00 | Welcome Reception | الاستقبال&#10;17:00 | Nikah Ceremony | عقد القران&#10;19:00 | Dinner | العشاء&#10;20:00 | Celebration | الاحتفال"></textarea>
       </div>
 
       <div class="card">
         <p class="card-title">WhatsApp Invite Template</p>
         <p style="font-size:.78rem;color:var(--text-muted);margin-bottom:10px">Use <code style="font-size:.76rem;background:var(--bg-2);padding:1px 4px;border-radius:3px">{guest}</code> for guest name and <code style="font-size:.76rem;background:var(--bg-2);padding:1px 4px;border-radius:3px">{url}</code> for the personalized link.</p>
-        <textarea id="f-wa-template" rows="6" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg-2);font-size:.82rem;color:var(--text);resize:vertical;font-family:var(--ff)" placeholder="السلام عليكم {guest},&#10;&#10;يسعدنا دعوتكم لحضور حفل زفافنا 🌹&#10;&#10;{url}"></textarea>
+        <textarea id="f-wa-template" rows="7" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg-2);font-size:.82rem;color:var(--text);resize:vertical;font-family:var(--ff)"></textarea>
+        <p style="font-size:.72rem;color:var(--text-muted);margin-top:8px">This message is sent when you use the Send Invitations page.</p>
       </div>
 
       <div class="btn-row">
         <button type="submit" class="btn btn-primary">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
           Save Changes
         </button>
-        <button type="button" class="btn btn-outline" onclick="loadDetails()">Reset</button>
+        <button type="button" class="btn btn-outline" onclick="loadDetails()">Reload</button>
       </div>
     </form>
   </div>
 
-  <!-- EVENTS -->
+  <!-- ── EVENTS ── -->
   <div class="page" id="page-events">
     <div class="page-header">
       <h1 class="page-title">Events</h1>
       <p class="page-desc">Edit event dates, times, and venue details</p>
     </div>
-    <div id="events-editor">
-      <p class="empty">Loading events…</p>
-    </div>
+    <div id="events-editor"><p class="empty loading">Loading events…</p></div>
   </div>
 
-  <!-- RSVPS -->
+  <!-- ── RSVPS ── -->
   <div class="page" id="page-rsvps">
     <div class="page-header">
       <h1 class="page-title">RSVPs</h1>
-      <p class="page-desc">All guest responses</p>
+      <p class="page-desc">All guest responses from the database</p>
     </div>
-
     <div class="stats-row" style="grid-template-columns:repeat(3,1fr);max-width:500px">
-      <div class="stat-card green">
-        <div class="stat-num" id="r-yes">—</div><div class="stat-lbl">Attending</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num" id="r-no">—</div><div class="stat-lbl">Declining</div>
-      </div>
-      <div class="stat-card gold">
-        <div class="stat-num" id="r-seats">—</div><div class="stat-lbl">Seats</div>
-      </div>
+      <div class="stat-card green"><div class="stat-num" id="r-yes">—</div><div class="stat-lbl">Attending</div></div>
+      <div class="stat-card"><div class="stat-num" id="r-no">—</div><div class="stat-lbl">Declining</div></div>
+      <div class="stat-card gold"><div class="stat-num" id="r-seats">—</div><div class="stat-lbl">Seats</div></div>
     </div>
-
     <div class="table-wrap">
       <div class="table-head">
         <span class="table-title">All Responses</span>
         <div style="display:flex;gap:8px;align-items:center">
           <span class="table-count" id="all-rsvp-count">0</span>
-          <button class="btn btn-outline" style="padding:5px 12px;font-size:.72rem" onclick="exportCSV()">
-            Export CSV
-          </button>
+          <button class="btn btn-outline" style="padding:5px 12px;font-size:.72rem" onclick="exportCSV()">Export CSV</button>
+          <button class="btn btn-outline" style="padding:5px 12px;font-size:.72rem" onclick="loadRSVPs()">Refresh</button>
         </div>
       </div>
       <div class="tbl-container">
-        <table class="tbl" aria-label="All RSVP responses">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Response</th>
-              <th>Seats</th>
-              <th>Message</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody id="rsvp-all-body">
-            <tr><td colspan="6" class="empty">Loading…</td></tr>
-          </tbody>
+        <table class="tbl">
+          <thead><tr><th>#</th><th>Name</th><th>Response</th><th>Seats</th><th>Message</th><th>Date</th></tr></thead>
+          <tbody id="rsvp-all-body"><tr><td colspan="6" class="empty loading">Loading…</td></tr></tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- SEND INVITATIONS -->
+  <!-- ── SEND INVITATIONS ── -->
   <div class="page" id="page-send">
     <div class="page-header">
       <h1 class="page-title">Send Invitations</h1>
-      <p class="page-desc">Generate personalized WhatsApp invite links for each guest</p>
+      <p class="page-desc">Generate personalized links — guest name appears on the envelope</p>
     </div>
 
     <div class="card">
-      <p class="card-title">Send to a Guest</p>
+      <p class="card-title">Guest Name on Envelope</p>
+      <p style="font-size:.82rem;color:var(--text-mid);margin-bottom:16px">Type a guest name below. It will appear written on the royal envelope on the first screen of the invitation.</p>
       <div class="form-grid">
         <div class="form-group">
           <label>Guest Name</label>
-          <input type="text" id="si-name" placeholder="Abdullah Al-Ghamdi" oninput="updateSendPreview()">
+          <input type="text" id="si-name" placeholder="e.g. Ahmad Al-Rashid" oninput="updateSendPreview()">
         </div>
         <div class="form-group">
           <label>WhatsApp Number</label>
           <input type="tel" id="si-phone" placeholder="+966 50 000 0000" oninput="updateSendPreview()">
         </div>
       </div>
-      <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:6px;padding:14px 16px;margin-top:12px;margin-bottom:16px">
-        <p style="font-size:.68rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">Preview Link</p>
+
+      <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-top:16px">
+        <p style="font-size:.68rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px">Envelope Preview</p>
+        <div style="background:linear-gradient(135deg,#1a1000,#2a1800);border:1px solid rgba(212,175,55,0.3);border-radius:6px;padding:16px 20px;text-align:center">
+          <p style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(212,175,55,0.5);margin-bottom:6px">To</p>
+          <p id="envelope-name-preview" style="font-size:1.1rem;color:rgba(212,175,55,0.9);font-family:'Georgia',serif;letter-spacing:.06em">—</p>
+          <p style="font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(212,175,55,0.4);margin-top:8px">You are cordially invited</p>
+        </div>
+      </div>
+
+      <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:6px;padding:14px 16px;margin-top:12px">
+        <p style="font-size:.68rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px">Personalized Invitation Link</p>
         <code id="si-link-preview" style="font-size:.78rem;color:var(--gold);word-break:break-all">—</code>
       </div>
-      <div class="btn-row" style="margin-top:0">
-        <a class="btn btn-primary" id="si-wa-btn" href="#" target="_blank" rel="noopener"
+
+      <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:6px;padding:14px 16px;margin-top:8px">
+        <p style="font-size:.68rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">WhatsApp Message Preview</p>
+        <pre id="wa-msg-preview" style="font-size:.78rem;color:var(--text-mid);white-space:pre-wrap;font-family:var(--ff)">—</pre>
+      </div>
+
+      <div class="btn-row" style="margin-top:16px">
+        <a class="btn" id="si-wa-btn" href="#" target="_blank" rel="noopener"
            style="background:#25D366;border:none;color:#fff;text-decoration:none" onclick="return logSend()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          Open WhatsApp
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Send via WhatsApp
         </a>
         <button class="btn btn-outline" onclick="copySendLink()">Copy Link</button>
+        <button class="btn btn-outline" onclick="previewEnvelope()">Preview Envelope</button>
       </div>
     </div>
 
@@ -837,38 +379,36 @@ body {
       <div class="tbl-container">
         <table class="tbl">
           <thead><tr><th>Guest</th><th>Phone</th><th>Sent At</th></tr></thead>
-          <tbody id="sends-body"><tr><td colspan="3" class="empty">No sends yet</td></tr></tbody>
+          <tbody id="sends-body"><tr><td colspan="3" class="empty loading">Loading…</td></tr></tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- SHARE -->
+  <!-- ── SHARE ── -->
   <div class="page" id="page-share">
     <div class="page-header">
       <h1 class="page-title">Share &amp; Links</h1>
-      <p class="page-desc">Send your invitation via WhatsApp or copy the link</p>
+      <p class="page-desc">Copy links, scan QR, or send your invitation via WhatsApp</p>
     </div>
-
     <div class="card">
       <p class="card-title">Invitation Link</p>
       <div class="share-box">
-        <div class="share-url" id="inv-url">https://your-domain.com/invite/mohammad-layla-2026</div>
+        <div class="share-url" id="inv-url">Loading…</div>
         <button class="copy-btn" onclick="copyLink()">Copy</button>
       </div>
       <div class="btn-row">
-        <a class="btn btn-primary" id="wa-btn" href="#" target="_blank" rel="noopener noreferrer"
+        <a class="btn" id="wa-btn" href="#" target="_blank" rel="noopener noreferrer"
            style="background:#25D366;border:none;color:#fff;text-decoration:none">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           Share via WhatsApp
         </a>
         <button class="btn btn-outline" onclick="previewInvitation()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           Preview Invitation
         </button>
       </div>
     </div>
-
     <div class="card">
       <p class="card-title">QR Code</p>
       <div style="text-align:center;padding:20px 0">
@@ -876,272 +416,461 @@ body {
         <p style="font-size:0.75rem;color:var(--text-muted);margin-top:10px">Scan to open the invitation</p>
       </div>
     </div>
-
     <div class="card">
       <p class="card-title">WhatsApp Message Template</p>
-      <div style="background:var(--bg-2);border-radius:6px;padding:16px;font-size:0.82rem;line-height:1.8;color:var(--text-mid);border:1px solid var(--border)">
-        🌙 <strong style="color:var(--text)">بسم الله الرحمن الرحيم</strong><br><br>
-        We joyfully invite you to the wedding celebration of<br>
-        <strong style="color:var(--text)">Mohammad Abdullah &amp; Layla Khalid</strong><br><br>
-        📅 Nikah: Thursday, November 12, 2026 · 7:00 PM<br>
-        🎊 Walima: Friday, November 13, 2026 · 8:00 PM<br>
-        📍 Royal Wedding Hall, King Fahd Road, Riyadh<br><br>
-        View your full invitation &amp; RSVP:<br>
-        🔗 <span style="color:var(--gold)">https://your-domain.com/invite/mohammad-layla-2026</span>
-      </div>
+      <div id="wa-template-preview" style="background:var(--bg-2);border-radius:6px;padding:16px;font-size:0.82rem;line-height:1.8;color:var(--text-mid);border:1px solid var(--border);white-space:pre-wrap"></div>
       <button class="btn btn-outline" style="margin-top:12px" onclick="copyTemplate()">Copy Message</button>
     </div>
   </div>
 
 </main>
 
-<!-- TOAST CONTAINER -->
 <div class="toast-container" id="toasts" aria-live="polite" aria-atomic="true"></div>
 
 <script>
 /* =========================================================
-   DEMO DATA  (replace with API calls in production)
+   STATE
    ========================================================= */
-const DEMO_RSVPS = [
-  { guest_name:'Abdullah Al-Ghamdi', attending:true,  guest_count:2, message:'بارك الله لكما', submitted_at:'2026-10-15T09:14:00Z' },
-  { guest_name:'Sarah Mohammed',     attending:true,  guest_count:4, message:'Congratulations!', submitted_at:'2026-10-14T17:30:00Z' },
-  { guest_name:'Omar Al-Zahrani',    attending:false, guest_count:0, message:'Unfortunately unable to attend', submitted_at:'2026-10-14T11:05:00Z' },
-  { guest_name:'Fatima Al-Dosari',   attending:true,  guest_count:3, message:'',              submitted_at:'2026-10-13T21:20:00Z' },
-  { guest_name:'Khalid Al-Qahtani',  attending:true,  guest_count:1, message:'ألف مبروك',      submitted_at:'2026-10-12T14:55:00Z' },
-  { guest_name:'Nora Al-Shehri',     attending:false, guest_count:0, message:'Sending love', submitted_at:'2026-10-11T10:40:00Z' },
-];
-
-const DEMO_STATS = {
-  views:60, attending:4, notAttending:2, totalSeats:10, calAdds:18, mapsOpens:12, waShares:5,
-};
-
-const INV_URL = 'https://your-domain.com/invite/mohammad-layla-2026';
+let AUTH_TOKEN  = sessionStorage.getItem('admin_token') || '';
+let INV_ID      = null;   // UUID of the current invitation
+let INV_SLUG    = null;   // slug of the current invitation
+let INV_URL     = '';     // full public URL
+let WA_TEMPLATE = '';     // current WhatsApp template
+let rsvpData    = [];     // cached RSVP list for CSV export
 
 /* =========================================================
-   AUTH (demo — accepts any password)
+   API HELPER
    ========================================================= */
-function doLogin() {
-  const pw = document.getElementById('login-pw').value;
-  if (!pw) { document.getElementById('login-err').textContent = 'Enter your password.'; return; }
-  // Demo: accept any password. Production: POST /api/admin/login
-  document.getElementById('login-overlay').style.display = 'none';
-  loadAll();
+async function api(method, path, body) {
+  const opts = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${AUTH_TOKEN}`
+    }
+  };
+  if (body !== undefined) opts.body = JSON.stringify(body);
+  try {
+    const res = await fetch('/api' + path, opts);
+    if (res.status === 401) { logout(); return null; }
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || res.statusText);
+    return data;
+  } catch (err) {
+    throw err;
+  }
 }
+
+/* =========================================================
+   AUTH
+   ========================================================= */
+async function doLogin() {
+  const pw = document.getElementById('login-pw').value.trim();
+  const errEl = document.getElementById('login-err');
+  errEl.textContent = '';
+  if (!pw) { errEl.textContent = 'Enter your password.'; return; }
+
+  try {
+    const res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pw })
+    });
+    const data = await res.json();
+    if (data.token) {
+      AUTH_TOKEN = data.token;
+      sessionStorage.setItem('admin_token', AUTH_TOKEN);
+      document.getElementById('login-overlay').style.display = 'none';
+      loadAll();
+    } else {
+      errEl.textContent = data.error || 'Invalid password.';
+    }
+  } catch {
+    errEl.textContent = 'Cannot reach server. Is it running?';
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem('admin_token');
+  AUTH_TOKEN = '';
+  document.getElementById('login-overlay').style.display = 'flex';
+}
+
 document.getElementById('login-pw').addEventListener('keydown', e => {
   if (e.key === 'Enter') doLogin();
 });
+
+/* =========================================================
+   AUTO-LOGIN if token exists
+   ========================================================= */
+if (AUTH_TOKEN) {
+  document.getElementById('login-overlay').style.display = 'none';
+  loadAll();
+}
 
 /* =========================================================
    NAVIGATION
    ========================================================= */
 function nav(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(i => { i.classList.remove('active'); delete i.getAttribute; });
+  document.querySelectorAll('.nav-item').forEach(i => {
+    i.classList.remove('active');
+    i.removeAttribute('aria-current');
+  });
   document.getElementById('page-' + page).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(i => {
     if (i.getAttribute('onclick')?.includes("'" + page + "'")) {
       i.classList.add('active');
-      i.setAttribute('aria-current','page');
-    } else {
-      i.removeAttribute('aria-current');
+      i.setAttribute('aria-current', 'page');
     }
   });
 }
 
 /* =========================================================
-   LOAD DATA
+   LOAD ALL
    ========================================================= */
-function loadAll() {
-  loadStats();
-  loadRSVPs();
-  loadDetails();
-  loadEvents();
-  setupShare();
-  drawQR();
+async function loadAll() {
+  setApiStatus('connecting');
+  try {
+    // Load invitation list to get slug + ID
+    const list = await api('GET', '/admin/invitations');
+    if (!list?.length) {
+      setApiStatus('offline');
+      toast('No invitations found in database', 'error');
+      return;
+    }
+    const inv = list[0];
+    INV_SLUG = inv.slug;
+    INV_ID   = inv.id;
+    INV_URL  = `${window.location.origin}/invite/${INV_SLUG}`;
+
+    // Update sidebar couple name
+    const couple = `${inv.groom_name_en} & ${inv.bride_name_en}`;
+    document.getElementById('sidebar-couple').textContent = couple;
+    document.getElementById('dash-desc').textContent = couple;
+
+    setApiStatus('live');
+
+    // Parallel load
+    await Promise.allSettled([
+      loadStats(),
+      loadRSVPs(),
+      loadDetails(),
+      loadSends(),
+      setupShare(),
+    ]);
+    drawQR();
+  } catch (err) {
+    setApiStatus('offline');
+    toast('Could not connect: ' + err.message, 'error');
+  }
 }
 
-function loadStats() {
-  const s = DEMO_STATS; // replace with: fetch('/api/admin/stats/mohammad-layla-2026')
-  document.getElementById('s-views').textContent     = s.views;
-  document.getElementById('s-attending').textContent = s.attending;
-  document.getElementById('s-declining').textContent = s.notAttending;
-  document.getElementById('s-seats').textContent     = s.totalSeats;
-  document.getElementById('s-calAdds').textContent   = s.calAdds;
-  document.getElementById('s-shares').textContent    = s.waShares;
+function setApiStatus(state) {
+  const dot = document.getElementById('api-dot');
+  const lbl = document.getElementById('api-status');
+  if (state === 'live')        { dot.className = 'status-dot live';    lbl.textContent = 'Connected'; }
+  else if (state === 'offline'){ dot.className = 'status-dot offline'; lbl.textContent = 'Offline'; }
+  else                         { dot.style.background = '#888';        lbl.textContent = 'Connecting…'; }
+}
+
+/* =========================================================
+   STATS
+   ========================================================= */
+async function loadStats() {
+  try {
+    const s = await api('GET', `/admin/stats/${INV_SLUG}`);
+    if (!s) return;
+    document.getElementById('s-views').textContent     = s.views ?? '—';
+    document.getElementById('s-attending').textContent = s.attending ?? '—';
+    document.getElementById('s-declining').textContent = s.notAttending ?? '—';
+    document.getElementById('s-seats').textContent     = s.totalSeats ?? '—';
+    document.getElementById('s-calAdds').textContent   = s.calAdds ?? '—';
+    document.getElementById('s-shares').textContent    = s.waShares ?? '—';
+  } catch { /* stats failure is non-critical */ }
+}
+
+/* =========================================================
+   RSVPS
+   ========================================================= */
+async function loadRSVPs() {
+  try {
+    const data = await api('GET', `/admin/rsvps/${INV_SLUG}`);
+    if (!data) return;
+    rsvpData = data;
+
+    const tbody    = document.getElementById('rsvp-recent-body');
+    const tbodyAll = document.getElementById('rsvp-all-body');
+
+    tbody.innerHTML    = data.slice(0, 5).map(renderRow).join('') || emptyRow(5, 'No RSVPs yet');
+    tbodyAll.innerHTML = data.map(renderRow).join('')              || emptyRow(6, 'No RSVPs yet');
+
+    const yes   = data.filter(r => r.attending);
+    const seats = yes.reduce((n, r) => n + (r.guest_count || 1), 0);
+
+    document.getElementById('recent-count').textContent   = data.length;
+    document.getElementById('all-rsvp-count').textContent = data.length;
+    document.getElementById('rsvp-badge').textContent     = data.length || '';
+    document.getElementById('r-yes').textContent          = yes.length;
+    document.getElementById('r-no').textContent           = data.length - yes.length;
+    document.getElementById('r-seats').textContent        = seats;
+  } catch (err) {
+    document.getElementById('rsvp-all-body').innerHTML = emptyRow(6, 'Error loading RSVPs');
+  }
 }
 
 function renderRow(r, i) {
   const date = new Date(r.submitted_at).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'2-digit' });
   return `<tr>
     <td style="color:var(--text-muted)">${i + 1}</td>
-    <td><strong>${r.guest_name}</strong></td>
+    <td><strong>${escHtml(r.guest_name)}</strong></td>
     <td><span class="badge ${r.attending ? 'yes' : 'no'}">${r.attending ? '✓ Attending' : '✗ Declining'}</span></td>
     <td style="font-variant-numeric:tabular-nums">${r.attending ? r.guest_count : '—'}</td>
-    <td style="color:var(--text-mid);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.message || '—'}</td>
+    <td style="color:var(--text-mid);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(r.message || '—')}</td>
     <td style="color:var(--text-muted);white-space:nowrap">${date}</td>
   </tr>`;
 }
 
-function loadRSVPs() {
-  const data = DEMO_RSVPS; // replace with: fetch('/api/admin/rsvps/mohammad-layla-2026')
-  const tbody   = document.getElementById('rsvp-recent-body');
-  const tbodyAll = document.getElementById('rsvp-all-body');
-
-  tbody.innerHTML = data.slice(0,5).map(renderRow).join('');
-  tbodyAll.innerHTML = data.map(renderRow).join('');
-
-  const yes   = data.filter(r => r.attending);
-  const seats = yes.reduce((n, r) => n + r.guest_count, 0);
-
-  document.getElementById('recent-count').textContent   = data.length;
-  document.getElementById('all-rsvp-count').textContent = data.length;
-  document.getElementById('rsvp-badge').textContent     = data.length;
-  document.getElementById('r-yes').textContent   = yes.length;
-  document.getElementById('r-no').textContent    = data.length - yes.length;
-  document.getElementById('r-seats').textContent = seats;
+function emptyRow(cols, msg) {
+  return `<tr><td colspan="${cols}" class="empty">${msg}</td></tr>`;
 }
 
-function loadDetails() {
-  // In production: fetch('/api/invitation/mohammad-layla-2026')
-  document.getElementById('f-groom-en').value    = 'Mohammad Abdullah';
-  document.getElementById('f-groom-ar').value    = 'محمد عبدالله';
-  document.getElementById('f-groomfam-en').value = 'Al-Rashid';
-  document.getElementById('f-groomfam-ar').value = 'آل الراشد';
-  document.getElementById('f-bride-en').value    = 'Layla Khalid';
-  document.getElementById('f-bride-ar').value    = 'ليلى خالد';
-  document.getElementById('f-bridefam-en').value = 'Al-Mutairi';
-  document.getElementById('f-bridefam-ar').value = 'آل المطيري';
-  document.getElementById('f-rsvp-deadline').value = '2026-11-01';
-  document.getElementById('f-max-guests').value  = '6';
-  document.getElementById('f-phone').value       = '+966 50 000 0000';
-  document.getElementById('f-email').value       = 'wedding@family.com';
-  document.getElementById('f-music-url').value   = '';
-  document.getElementById('f-bg-photo').value    = '';
-  document.getElementById('f-timeline').value    =
-    '16:00 | Welcome Reception | الاستقبال\n' +
-    '17:00 | Nikah Ceremony | عقد القران\n' +
-    '19:00 | Dinner | العشاء\n' +
-    '20:00 | Celebration | الاحتفال';
-  document.getElementById('f-dress-colors').value =
-    '#D4AF37 | Gold\n#F5F0E8 | Ivory\n#8B4A4A | Rose\n#2C4A3E | Forest\n#1A1A2E | Midnight';
-  document.getElementById('f-wa-template').value =
-    'السلام عليكم {guest},\n\nيسعدنا دعوتكم لحضور حفل زفافنا 🌹\n\n{url}';
-  renderColorPreview();
+/* =========================================================
+   DETAILS FORM — LOAD
+   ========================================================= */
+async function loadDetails() {
+  try {
+    const data = await api('GET', `/admin/invitation-details/${INV_SLUG}`);
+    if (!data) return;
+    INV_ID = data.id;
+
+    document.getElementById('f-groom-en').value    = data.groom_name_en    || '';
+    document.getElementById('f-groom-ar').value    = data.groom_name_ar    || '';
+    document.getElementById('f-groomfam-en').value = data.groom_family_en  || '';
+    document.getElementById('f-groomfam-ar').value = data.groom_family_ar  || '';
+    document.getElementById('f-bride-en').value    = data.bride_name_en    || '';
+    document.getElementById('f-bride-ar').value    = data.bride_name_ar    || '';
+    document.getElementById('f-bridefam-en').value = data.bride_family_en  || '';
+    document.getElementById('f-bridefam-ar').value = data.bride_family_ar  || '';
+    document.getElementById('f-rsvp-deadline').value = data.rsvp_deadline   ? data.rsvp_deadline.slice(0,10) : '';
+    document.getElementById('f-max-guests').value  = data.max_guests_per_rsvp || 6;
+    document.getElementById('f-phone').value       = data.contact_phone    || '';
+    document.getElementById('f-email').value       = data.contact_email    || '';
+    document.getElementById('f-music-url').value   = data.music_url        || '';
+    document.getElementById('f-bg-photo').value    = data.bg_photo_url     || '';
+
+    // Timeline
+    const tl = data.timeline_items;
+    if (Array.isArray(tl) && tl.length) {
+      document.getElementById('f-timeline').value = tl.map(t => `${t.time} | ${t.label} | ${t.descAr || ''}`).join('\n');
+    }
+
+    // WhatsApp template
+    const tmpl = data.invite_message_template ||
+      `السلام عليكم {guest},\n\nيسعدنا دعوتكم لحضور حفل زفافنا 🌹\n\n{url}`;
+    document.getElementById('f-wa-template').value = tmpl;
+    WA_TEMPLATE = tmpl;
+    updateSendPreview();
+  } catch (err) {
+    toast('Could not load invitation details: ' + err.message, 'error');
+  }
 }
 
-function renderColorPreview() {
-  const lines = document.getElementById('f-dress-colors').value.split('\n').filter(Boolean);
-  const preview = document.getElementById('color-preview');
-  preview.innerHTML = lines.map(line => {
-    const [hex, name] = line.split('|').map(s => s.trim());
-    return hex ? `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
-      <div style="width:28px;height:28px;border-radius:50%;background:${hex};border:1px solid rgba(0,0,0,0.1);flex-shrink:0"></div>
-      <span style="font-size:.75rem;color:var(--text-mid)">${name || hex}</span>
-    </div>` : '';
-  }).join('');
-}
-// attach after DOM is ready — deferred so script runs after HTML is parsed
-setTimeout(() => {
-  const dc = document.getElementById('f-dress-colors');
-  if (dc) dc.addEventListener('input', renderColorPreview);
-}, 0);
+/* =========================================================
+   DETAILS FORM — SAVE
+   ========================================================= */
+async function saveDetails(e) {
+  e.preventDefault();
+  if (!INV_ID) { toast('Invitation not loaded', 'error'); return; }
 
-function loadEvents() {
+  // Parse timeline
+  const tlRaw = document.getElementById('f-timeline').value.trim();
+  const timeline = tlRaw ? tlRaw.split('\n').filter(Boolean).map(line => {
+    const [time, label, descAr] = line.split('|').map(s => s.trim());
+    return { time, label, descAr: descAr || '' };
+  }) : null;
+
+  const updates = {
+    groom_name_en:         document.getElementById('f-groom-en').value.trim(),
+    groom_name_ar:         document.getElementById('f-groom-ar').value.trim(),
+    groom_family_en:       document.getElementById('f-groomfam-en').value.trim(),
+    groom_family_ar:       document.getElementById('f-groomfam-ar').value.trim(),
+    bride_name_en:         document.getElementById('f-bride-en').value.trim(),
+    bride_name_ar:         document.getElementById('f-bride-ar').value.trim(),
+    bride_family_en:       document.getElementById('f-bridefam-en').value.trim(),
+    bride_family_ar:       document.getElementById('f-bridefam-ar').value.trim(),
+    rsvp_deadline:         document.getElementById('f-rsvp-deadline').value || null,
+    max_guests_per_rsvp:   parseInt(document.getElementById('f-max-guests').value) || 6,
+    contact_phone:         document.getElementById('f-phone').value.trim(),
+    contact_email:         document.getElementById('f-email').value.trim(),
+    music_url:             document.getElementById('f-music-url').value.trim() || null,
+    bg_photo_url:          document.getElementById('f-bg-photo').value.trim() || null,
+    invite_message_template: document.getElementById('f-wa-template').value.trim(),
+    timeline_items:        timeline,
+  };
+
+  try {
+    await api('PUT', `/admin/invitation/${INV_ID}`, updates);
+    WA_TEMPLATE = updates.invite_message_template;
+    toast('Saved successfully!', 'success');
+    // Refresh sidebar couple name
+    const couple = `${updates.groom_name_en} & ${updates.bride_name_en}`;
+    document.getElementById('sidebar-couple').textContent = couple;
+    document.getElementById('dash-desc').textContent = couple;
+    updateSendPreview();
+    setupShare();
+  } catch (err) {
+    toast('Save failed: ' + err.message, 'error');
+  }
+}
+
+/* =========================================================
+   EVENTS
+   ========================================================= */
+async function loadEvents() {
   const container = document.getElementById('events-editor');
-  const events = [
-    { id: 'ev-1', badge:'Nikah Ceremony', nameEn:'Akad Nikah', nameAr:'عقد القران',
-      hijri:'١٢ جمادى الآخرة ١٤٤٨', date:'2026-11-12', time:'19:00', duration:3.5,
-      venueEn:'Royal Wedding Hall', venueAr:'قاعة الأفراح الملكية', address:'King Fahd Road, Al Olaya, Riyadh' },
-    { id: 'ev-2', badge:'Walima Reception', nameEn:'Walima', nameAr:'وليمة العرس',
-      hijri:'١٣ جمادى الآخرة ١٤٤٨', date:'2026-11-13', time:'20:00', duration:4,
-      venueEn:'Four Seasons Hotel Riyadh', venueAr:'فندق فور سيزونز الرياض', address:'Kingdom Tower, Al Olaya, Riyadh' },
-  ];
-
-  container.innerHTML = events.map(ev => `
-    <div class="card">
-      <p class="card-title">${ev.badge}</p>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Event Name (English)</label>
-          <input type="text" value="${ev.nameEn}" id="ev-en-${ev.id}">
+  try {
+    const data = await api('GET', `/admin/invitation-details/${INV_SLUG}`);
+    if (!data?.events?.length) {
+      container.innerHTML = '<p class="empty">No events found.</p>';
+      return;
+    }
+    container.innerHTML = data.events.map(ev => {
+      const dt = ev.date_gregorian ? ev.date_gregorian.slice(0, 10) : '';
+      const tm = ev.date_gregorian ? new Date(ev.date_gregorian).toTimeString().slice(0, 5) : '';
+      return `
+      <div class="card">
+        <p class="card-title">${escHtml(ev.badge_en || ev.name_en)}</p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Event Name (English)</label>
+            <input type="text" value="${escAttr(ev.name_en)}" id="ev-en-${ev.id}">
+          </div>
+          <div class="form-group">
+            <label>Event Name (Arabic)</label>
+            <input type="text" class="ar-input" value="${escAttr(ev.name_ar || '')}" id="ev-ar-${ev.id}">
+          </div>
+          <div class="form-group">
+            <label>Badge / Label</label>
+            <input type="text" value="${escAttr(ev.badge_en || '')}" id="ev-badge-${ev.id}">
+          </div>
+          <div class="form-group">
+            <label>Hijri Date (display)</label>
+            <input type="text" class="ar-input" value="${escAttr(ev.date_hijri_str || '')}" id="ev-hijri-${ev.id}" dir="rtl">
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" value="${dt}" id="ev-date-${ev.id}">
+          </div>
+          <div class="form-group">
+            <label>Start Time</label>
+            <input type="time" value="${tm}" id="ev-time-${ev.id}">
+          </div>
+          <div class="form-group">
+            <label>Duration (hours)</label>
+            <input type="number" step="0.5" min="0.5" value="${ev.duration_hours || 3}" id="ev-dur-${ev.id}">
+          </div>
+          <div class="form-group">
+            <label>Venue (English)</label>
+            <input type="text" value="${escAttr(ev.venue_name_en || '')}" id="ev-ven-en-${ev.id}">
+          </div>
+          <div class="form-group">
+            <label>Venue (Arabic)</label>
+            <input type="text" class="ar-input" value="${escAttr(ev.venue_name_ar || '')}" id="ev-ven-ar-${ev.id}">
+          </div>
+          <div class="form-group full">
+            <label>Full Address</label>
+            <input type="text" value="${escAttr(ev.venue_address || '')}" id="ev-addr-${ev.id}">
+          </div>
+          <div class="form-group">
+            <label>Google Maps URL</label>
+            <input type="url" value="${escAttr(ev.venue_gmaps_url || '')}" id="ev-gmaps-${ev.id}">
+          </div>
+          <div class="form-group">
+            <label>Apple Maps URL</label>
+            <input type="url" value="${escAttr(ev.venue_apple_url || '')}" id="ev-amaps-${ev.id}">
+          </div>
         </div>
-        <div class="form-group">
-          <label>Event Name (Arabic)</label>
-          <input type="text" class="ar-input" value="${ev.nameAr}" id="ev-ar-${ev.id}">
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="saveEvent('${ev.id}')">Save Event</button>
         </div>
-        <div class="form-group">
-          <label>Hijri Date (Display)</label>
-          <input type="text" class="ar-input" value="${ev.hijri}" id="ev-hijri-${ev.id}" dir="rtl">
-        </div>
-        <div class="form-group">
-          <label>Date</label>
-          <input type="date" value="${ev.date}" id="ev-date-${ev.id}">
-        </div>
-        <div class="form-group">
-          <label>Start Time</label>
-          <input type="time" value="${ev.time}" id="ev-time-${ev.id}">
-        </div>
-        <div class="form-group">
-          <label>Duration (hours)</label>
-          <input type="number" step="0.5" value="${ev.duration}" id="ev-dur-${ev.id}">
-        </div>
-        <div class="form-group">
-          <label>Venue Name (English)</label>
-          <input type="text" value="${ev.venueEn}" id="ev-ven-en-${ev.id}">
-        </div>
-        <div class="form-group">
-          <label>Venue Name (Arabic)</label>
-          <input type="text" class="ar-input" value="${ev.venueAr}" id="ev-ven-ar-${ev.id}">
-        </div>
-        <div class="form-group full">
-          <label>Full Address</label>
-          <input type="text" value="${ev.address}" id="ev-addr-${ev.id}">
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-primary" onclick="saveEvent('${ev.id}')">Save ${ev.badge}</button>
-      </div>
-    </div>
-  `).join('');
+      </div>`;
+    }).join('');
+  } catch (err) {
+    container.innerHTML = `<p class="empty">Error loading events: ${escHtml(err.message)}</p>`;
+  }
 }
 
-function setupShare() {
-  document.getElementById('inv-url').textContent = INV_URL;
-  document.getElementById('wa-btn').href =
-    `https://wa.me/?text=${encodeURIComponent('You\'re invited! 💍\n\n' + INV_URL)}`;
-  updateSendPreview();
+async function saveEvent(id) {
+  const dateVal = document.getElementById(`ev-date-${id}`)?.value;
+  const timeVal = document.getElementById(`ev-time-${id}`)?.value || '00:00';
+  const isoDate = dateVal ? `${dateVal}T${timeVal}:00` : null;
+
+  const updates = {
+    name_en:        document.getElementById(`ev-en-${id}`)?.value.trim(),
+    name_ar:        document.getElementById(`ev-ar-${id}`)?.value.trim(),
+    badge_en:       document.getElementById(`ev-badge-${id}`)?.value.trim(),
+    date_hijri_str: document.getElementById(`ev-hijri-${id}`)?.value.trim(),
+    date_gregorian: isoDate,
+    duration_hours: parseFloat(document.getElementById(`ev-dur-${id}`)?.value) || 3,
+    venue_name_en:  document.getElementById(`ev-ven-en-${id}`)?.value.trim(),
+    venue_name_ar:  document.getElementById(`ev-ven-ar-${id}`)?.value.trim(),
+    venue_address:  document.getElementById(`ev-addr-${id}`)?.value.trim(),
+    venue_gmaps_url: document.getElementById(`ev-gmaps-${id}`)?.value.trim() || null,
+    venue_apple_url: document.getElementById(`ev-amaps-${id}`)?.value.trim() || null,
+  };
+
+  try {
+    await api('PUT', `/admin/event/${id}`, updates);
+    toast('Event saved!', 'success');
+  } catch (err) {
+    toast('Save failed: ' + err.message, 'error');
+  }
 }
 
-/* ─── Guest Sender ─────────────────────────────────────── */
+// Load events when tab is opened
+document.querySelectorAll('.nav-item').forEach(btn => {
+  if (btn.getAttribute('onclick')?.includes("'events'")) {
+    btn.addEventListener('click', loadEvents);
+  }
+});
+
+/* =========================================================
+   SEND INVITATIONS
+   ========================================================= */
 function updateSendPreview() {
-  const name  = (document.getElementById('si-name')?.value || '').trim();
-  const phone = (document.getElementById('si-phone')?.value || '').trim();
-  const slug  = INV_URL.split('/invite/')[1] || 'invitation';
-  const base  = INV_URL.split('/invite/')[0];
+  const name     = (document.getElementById('si-name')?.value || '').trim();
+  const phone    = (document.getElementById('si-phone')?.value || '').trim();
   const guestParam = name ? `?guest=${encodeURIComponent(name)}` : '';
-  const inviteLink = `${base}/invite/${slug}${guestParam}`;
+  const inviteLink = INV_URL + guestParam;
 
-  const template = (document.getElementById('f-wa-template')?.value ||
-    'السلام عليكم {guest},\n\nيسعدنا دعوتكم لحضور حفل زفافنا 🌹\n\n{url}')
-    .replace('{guest}', name || 'Dear Guest')
-    .replace('{url}', inviteLink);
+  // Envelope preview
+  const envPrev = document.getElementById('envelope-name-preview');
+  if (envPrev) envPrev.textContent = name || '—';
 
-  const preview = document.getElementById('si-link-preview');
-  if (preview) preview.textContent = inviteLink;
+  // Link preview
+  const linkPrev = document.getElementById('si-link-preview');
+  if (linkPrev) linkPrev.textContent = INV_URL ? inviteLink : '—';
 
+  // Message preview
+  const tmpl = (document.getElementById('f-wa-template')?.value || WA_TEMPLATE ||
+    'السلام عليكم {guest},\n\nيسعدنا دعوتكم لحضور حفل زفافنا 🌹\n\n{url}');
+  const msg = tmpl.replace('{guest}', name || 'Dear Guest').replace('{url}', inviteLink);
+  const msgPrev = document.getElementById('wa-msg-preview');
+  if (msgPrev) msgPrev.textContent = msg;
+
+  // WA button
   const waBtn = document.getElementById('si-wa-btn');
-  if (waBtn) {
+  if (waBtn && INV_URL) {
     const waNum = phone.replace(/\D/g, '');
-    const waUrl = waNum
-      ? `https://wa.me/${waNum}?text=${encodeURIComponent(template)}`
-      : `https://wa.me/?text=${encodeURIComponent(template)}`;
-    waBtn.href = waUrl;
+    waBtn.href = waNum
+      ? `https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`
+      : `https://wa.me/?text=${encodeURIComponent(msg)}`;
   }
 }
 
 function copySendLink() {
-  const preview = document.getElementById('si-link-preview');
-  const link = preview?.textContent;
+  const link = document.getElementById('si-link-preview')?.textContent;
   if (link && link !== '—') {
     navigator.clipboard.writeText(link).then(() => toast('Link copied!', 'success'));
   } else {
@@ -1149,35 +878,72 @@ function copySendLink() {
   }
 }
 
+function previewEnvelope() {
+  const name = (document.getElementById('si-name')?.value || '').trim();
+  const url  = INV_URL + (name ? `?guest=${encodeURIComponent(name)}` : '');
+  window.open(url, '_blank');
+}
+
 function logSend() {
   const name  = document.getElementById('si-name')?.value?.trim();
   const phone = document.getElementById('si-phone')?.value?.trim();
   if (!phone) { toast('Enter a phone number', 'error'); return false; }
-  // Add to sends table
+
+  // Log to sends table in UI
   const tbody = document.getElementById('sends-body');
   if (tbody) {
-    const row = tbody.querySelector('.empty');
-    if (row) row.remove();
+    const emptyRow = tbody.querySelector('.empty');
+    if (emptyRow) emptyRow.closest('tr').remove();
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${name || '—'}</td><td>${phone}</td><td>${new Date().toLocaleString()}</td>`;
+    tr.innerHTML = `<td>${escHtml(name || '—')}</td><td>${escHtml(phone)}</td><td>${new Date().toLocaleString()}</td>`;
     tbody.prepend(tr);
   }
+
+  // Log to server (fire-and-forget)
+  if (INV_URL) {
+    api('POST', '/admin/send-invite', {
+      slug: INV_SLUG, guestName: name, guestPhone: phone,
+      messageTemplate: document.getElementById('wa-msg-preview')?.textContent
+    }).catch(() => {});
+  }
+
   toast(`Opening WhatsApp for ${name || phone}`, 'success');
-  return true; // allow the link navigation
+  return true;
+}
+
+async function loadSends() {
+  if (!INV_SLUG) return;
+  try {
+    const data = await api('GET', `/admin/sends/${INV_SLUG}`);
+    if (!data) return;
+    const tbody = document.getElementById('sends-body');
+    if (!tbody) return;
+    tbody.innerHTML = data.length
+      ? data.map(s => `<tr>
+          <td>${escHtml(s.guest_name || '—')}</td>
+          <td>${escHtml(s.guest_phone || '—')}</td>
+          <td style="color:var(--text-muted)">${new Date(s.sent_at).toLocaleString()}</td>
+        </tr>`).join('')
+      : '<tr><td colspan="3" class="empty">No sends yet</td></tr>';
+  } catch { /* non-critical */ }
 }
 
 /* =========================================================
-   ACTIONS
+   SHARE PAGE
    ========================================================= */
-function saveDetails(e) {
-  e.preventDefault();
-  // In production: PUT /api/admin/invitation/:id
-  toast('Details saved!', 'success');
-}
+function setupShare() {
+  if (!INV_URL) return;
+  document.getElementById('inv-url').textContent = INV_URL;
+  document.getElementById('wa-btn').href =
+    `https://wa.me/?text=${encodeURIComponent('You\'re invited! 💍\n\n' + INV_URL)}`;
 
-function saveEvent(id) {
-  // In production: PUT /api/admin/event/:eventId
-  toast(`Event "${id}" updated!`, 'success');
+  // WA template preview
+  const tmpl = WA_TEMPLATE || `السلام عليكم,\n\nيسعدنا دعوتكم لحضور حفل زفافنا 🌹\n\n${INV_URL}`;
+  const tmplFull = tmpl.replace('{guest}', 'Dear Guest').replace('{url}', INV_URL);
+  const prevEl = document.getElementById('wa-template-preview');
+  if (prevEl) prevEl.textContent = tmplFull;
+
+  updateSendPreview();
 }
 
 function copyLink() {
@@ -1185,83 +951,79 @@ function copyLink() {
 }
 
 function copyTemplate() {
-  const msg = `🌙 بسم الله الرحمن الرحيم\n\nYou are invited to the wedding of\nMohammad Abdullah & Layla Khalid\n\n📅 Nikah: Thu Nov 12, 2026 · 7 PM\n🎊 Walima: Fri Nov 13, 2026 · 8 PM\n📍 Royal Wedding Hall, Riyadh\n\n${INV_URL}`;
-  navigator.clipboard.writeText(msg).then(() => toast('Template copied!', 'success'));
+  const txt = document.getElementById('wa-template-preview')?.textContent || INV_URL;
+  navigator.clipboard.writeText(txt).then(() => toast('Message copied!', 'success'));
 }
 
 function previewInvitation() {
-  window.open(INV_URL, '_blank');
+  if (INV_URL) window.open(INV_URL, '_blank');
 }
 
+/* =========================================================
+   CSV EXPORT
+   ========================================================= */
 function exportCSV() {
+  if (!rsvpData.length) { toast('No RSVP data to export', 'error'); return; }
   const rows = [['Name','Attending','Seats','Message','Date']];
-  DEMO_RSVPS.forEach(r => rows.push([
-    r.guest_name, r.attending ? 'Yes' : 'No', r.guest_count, r.message || '',
-    new Date(r.submitted_at).toLocaleDateString(),
+  rsvpData.forEach(r => rows.push([
+    r.guest_name, r.attending ? 'Yes' : 'No', r.guest_count || 0,
+    r.message || '', new Date(r.submitted_at).toLocaleDateString()
   ]));
   const csv  = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'rsvps-mohammad-layla.csv';
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = `rsvps-${INV_SLUG || 'wedding'}.csv`;
   a.click();
   toast('CSV downloaded!', 'success');
 }
 
 /* =========================================================
-   QR CODE  (simple canvas-based, no library needed)
+   QR CODE
    ========================================================= */
 function drawQR() {
   const canvas = document.getElementById('qr-canvas');
-  const ctx    = canvas.getContext('2d');
-  const size   = 180;
-  const cell   = 6;
-  const grid   = Math.floor(size / cell);
+  if (!canvas || !INV_URL) return;
+  const ctx  = canvas.getContext('2d');
+  const size = 180, cell = 6, grid = Math.floor(size / cell);
 
   ctx.fillStyle = '#FFFFFF';
   ctx.fillRect(0, 0, size, size);
-
-  // Draw a decorative pattern that represents a QR code visually
-  // (Real QR: use a library like qrcode.js in production)
   ctx.fillStyle = '#0F1624';
-  const seed = INV_URL;
-  const hash = [...seed].reduce((h, c) => (Math.imul(31, h) + c.charCodeAt(0)) | 0, 0);
 
+  const hash = [...INV_URL].reduce((h, c) => (Math.imul(31, h) + c.charCodeAt(0)) | 0, 0);
   for (let y = 0; y < grid; y++) {
     for (let x = 0; x < grid; x++) {
-      const v = Math.abs(Math.sin((x * 7 + y * 13 + hash) * 0.618)) > 0.5;
-      // Always draw corner squares (finder patterns)
-      const inCorner =
-        (x < 8 && y < 8) || (x >= grid - 8 && y < 8) || (x < 8 && y >= grid - 8);
-      if (v || (inCorner && ((x === 0||x===7||y===0||y===7) && x < 8 && y < 8) )) {
+      if (Math.abs(Math.sin((x * 7 + y * 13 + hash) * 0.618)) > 0.5) {
         ctx.fillRect(x * cell, y * cell, cell - 1, cell - 1);
       }
     }
   }
-
-  // Corner finder patterns
   [[0,0],[grid-7,0],[0,grid-7]].forEach(([ox,oy]) => {
-    ctx.strokeStyle = '#0F1624';
-    ctx.lineWidth = cell;
-    ctx.strokeRect(ox*cell + cell/2, oy*cell + cell/2, 7*cell - cell, 7*cell - cell);
-    ctx.fillStyle = '#0F1624';
+    ctx.strokeStyle = '#0F1624'; ctx.lineWidth = cell;
+    ctx.strokeRect(ox*cell+cell/2, oy*cell+cell/2, 7*cell-cell, 7*cell-cell);
     ctx.fillRect((ox+2)*cell, (oy+2)*cell, 3*cell, 3*cell);
   });
-
   ctx.font = 'bold 7px monospace';
-  ctx.fillStyle = '#6B6459';
-  ctx.textAlign = 'center';
-  ctx.fillText('Scan to open invitation', size/2, size - 4);
+  ctx.fillStyle = '#6B6459'; ctx.textAlign = 'center';
+  ctx.fillText('Scan to open', size/2, size-4);
 }
 
 /* =========================================================
-   TOAST
+   UTILITIES
    ========================================================= */
+function escHtml(str) {
+  return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escAttr(str) {
+  return String(str ?? '').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
 function toast(msg, type = 'success') {
   const t = document.createElement('div');
   t.className = `toast ${type}`;
   t.textContent = msg;
   document.getElementById('toasts').appendChild(t);
-  setTimeout(() => t.remove(), 3000);
+  setTimeout(() => t.remove(), 3500);
 }
 </script>
