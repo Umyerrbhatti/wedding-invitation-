@@ -321,6 +321,37 @@ app.put('/api/admin/event/:id', requireAdmin, async (req, res) => {
   res.json(data);
 });
 
+/** Create a new event */
+app.post('/api/admin/event', requireAdmin, async (req, res) => {
+  const { invitation_id } = req.body;
+  if (!invitation_id) return res.status(400).json({ error: 'invitation_id required' });
+
+  // Find next sort_order
+  const { data: existing } = await supabaseService
+    .from('events').select('sort_order').eq('invitation_id', invitation_id).order('sort_order', { ascending: false }).limit(1);
+  const nextSort = (existing?.[0]?.sort_order || 0) + 1;
+
+  const { data, error } = await supabaseService.from('events').insert({
+    invitation_id,
+    sort_order:    nextSort,
+    name_en:       'New Event',
+    name_ar:       'حدث جديد',
+    badge_en:      'Event',
+    date_gregorian: new Date().toISOString(),
+    duration_hours: 3,
+  }).select().single();
+
+  if (error) return res.status(500).json({ error });
+  res.status(201).json(data);
+});
+
+/** Delete an event */
+app.delete('/api/admin/event/:id', requireAdmin, async (req, res) => {
+  const { error } = await supabaseService.from('events').delete().eq('id', req.params.id);
+  if (error) return res.status(500).json({ error });
+  res.json({ ok: true });
+});
+
 /** Create a new invitation */
 app.post('/api/admin/invitation', requireAdmin, async (req, res) => {
   const { data, error } = await supabaseService
@@ -328,6 +359,36 @@ app.post('/api/admin/invitation', requireAdmin, async (req, res) => {
 
   if (error) return res.status(500).json({ error });
   res.status(201).json(data);
+});
+
+/** Full invitation details + events for admin edit form */
+app.get('/api/admin/invitation-details/:slug', requireAdmin, async (req, res) => {
+  const { data, error } = await supabaseService
+    .from('invitations')
+    .select('*, events(*)')
+    .eq('slug', req.params.slug)
+    .order('sort_order', { referencedTable: 'events' })
+    .single();
+
+  if (error || !data) return res.status(404).json({ error: 'Not found' });
+  res.json(data);
+});
+
+/** Recent sends for an invitation */
+app.get('/api/admin/sends/:slug', requireAdmin, async (req, res) => {
+  const { data: inv } = await supabaseService
+    .from('invitations').select('id').eq('slug', req.params.slug).single();
+  if (!inv) return res.status(404).json({ error: 'Not found' });
+
+  const { data, error } = await supabaseService
+    .from('guest_sends')
+    .select('*')
+    .eq('invitation_id', inv.id)
+    .order('sent_at', { ascending: false })
+    .limit(50);
+
+  if (error) return res.status(500).json({ error });
+  res.json(data || []);
 });
 
 // ─────────────────────────────────────────────────────────────
