@@ -521,14 +521,15 @@ section{padding:80px 24px;max-width:680px;margin:0 auto}
   font-weight:300;font-style:italic;color:var(--text-dark);
 }
 .timeline{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
   gap:0;margin-top:52px;
   border:1px solid var(--gold-edge);
   border-radius:2px;overflow:hidden;
 }
 .tl-item{
-  padding:32px 16px 28px;
+  padding:28px 20px 24px;
   border-right:1px solid var(--gold-edge);
+  border-bottom:1px solid var(--gold-edge);
   background:var(--ivory);
   transition:background 0.2s;
 }
@@ -580,6 +581,24 @@ section{padding:80px 24px;max-width:680px;margin:0 auto}
   letter-spacing:0.22em;text-transform:uppercase;
   color:var(--text-muted);margin-top:6px;
 }
+
+/* ── ADD TO CALENDAR ────────────────────────────────────── */
+.cal-section{text-align:center;background:var(--ivory)}
+.cal-date{
+  font-family:var(--ff-display);font-size:clamp(1rem,3vw,1.4rem);
+  font-style:italic;font-weight:300;color:var(--text-mid);
+  margin-bottom:20px;
+}
+.cal-btns{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:4px}
+.cal-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 22px;border:1px solid var(--gold-edge);border-radius:2px;
+  background:transparent;color:var(--text-dark);
+  font-family:var(--ff-ui);font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;
+  text-decoration:none;transition:background 0.2s,color 0.2s;
+}
+.cal-btn:hover{background:var(--gold);color:#fff}
+.cal-btn svg{width:16px;height:16px;flex-shrink:0}
 
 /* ── VENUE ──────────────────────────────────────────────── */
 .venue-section{text-align:center}
@@ -739,8 +758,7 @@ section{padding:80px 24px;max-width:680px;margin:0 auto}
 /* ── RESPONSIVE ──────────────────────────────────────────── */
 @media(max-width:540px){
   .timeline{grid-template-columns:1fr 1fr}
-  .tl-item:nth-child(2){border-right:none}
-  .tl-item:nth-child(3){border-top:1px solid var(--gold-edge)}
+  .tl-item:nth-child(even){border-right:none}
   .dresscode-notes{grid-template-columns:1fr}
   .rsvp-row{flex-direction:column}
 }
@@ -1090,6 +1108,22 @@ section{padding:80px 24px;max-width:680px;margin:0 auto}
     </div>
   </section>
 
+  <!-- ADD TO CALENDAR -->
+  <section class="cal-section scroll-reveal">
+    <p class="section-eyebrow">Save the Date</p>
+    <p class="cal-date" id="calDate"></p>
+    <div class="cal-btns">
+      <a id="calGoogleBtn" class="cal-btn" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.5 3h-15A1.5 1.5 0 003 4.5v15A1.5 1.5 0 004.5 21h15a1.5 1.5 0 001.5-1.5v-15A1.5 1.5 0 0019.5 3zM8 17H6v-7h2v7zM7 8.75A1.25 1.25 0 117 6.25a1.25 1.25 0 010 2.5zM18 17h-2v-3.5c0-.97-.03-2.22-1.35-2.22-1.36 0-1.57 1.06-1.57 2.15V17h-2v-7h1.92v1.01h.03a2.1 2.1 0 011.89-1.04c2.02 0 2.39 1.33 2.39 3.06V17z"/></svg>
+        Google Calendar
+      </a>
+      <a id="calIcsBtn" class="cal-btn" download="wedding-invitation.ics">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+        Apple / Outlook
+      </a>
+    </div>
+  </section>
+
   <!-- VENUE -->
   <section class="venue-section scroll-reveal">
     <p class="section-eyebrow">Where</p>
@@ -1240,8 +1274,10 @@ function renderInvitation() {
       ? new Date(W.rsvpDeadline).toLocaleDateString('en-SA',{day:'numeric',month:'long',year:'numeric'})
       : 'the deadline';
     const rendered = W.welcomeMessage
-      .replace(/\[BRIDE'?S? NAME\]/gi, `<span class="welcome-name">${W.brideEn}</span>`)
-      .replace(/\[GROOM'?S? NAME\]/gi, `<span class="welcome-name">${W.groomEn}</span>`)
+      .replace(/\n{2,}/g, '\n')
+      .trim()
+      .replace(/\[BRIDE[‘’’]?S? NAME\]/gi, `<span class="welcome-name">${W.brideEn}</span>`)
+      .replace(/\[GROOM[‘’']?S? NAME\]/gi, `<span class="welcome-name">${W.groomEn}</span>`)
       .replace(/\[BRIDE\]/gi,           `<span class="welcome-name">${W.brideEn}</span>`)
       .replace(/\[GROOM\]/gi,           `<span class="welcome-name">${W.groomEn}</span>`)
       .replace(/\[RSVP Deadline\]/gi,   deadlineStr)
@@ -1259,16 +1295,27 @@ function renderInvitation() {
     `joyfully invite you to the wedding celebration of<br>` +
     `<strong>${W.groomEn}</strong> &amp; <strong>${W.brideEn}</strong>`;
 
-  // Timeline — use W.timeline if available, else build from events
+  // Timeline — merge alternating description rows then render
   const tlGrid = document.getElementById('timelineGrid');
-  const timelineItems = W.timeline?.length ? W.timeline :
+  const rawItems = W.timeline?.length ? W.timeline :
     (W.events?.length ? W.events.map(e => ({
-      time: e.timeStr, label: e.nameEn, descAr: e.nameAr
+      time: e.timeStr, label: e.nameEn, desc: ''
     })) : []);
+  // W.timeline stores pairs: {time, label} then {time: descText, label:'undefined'}
+  const timelineItems = [];
+  for (const item of rawItems) {
+    const isDesc = !item.label || item.label === 'undefined';
+    if (isDesc) {
+      if (timelineItems.length > 0) timelineItems[timelineItems.length - 1].desc = item.time;
+    } else {
+      timelineItems.push({ time: item.time, label: item.label, desc: item.desc || '' });
+    }
+  }
   tlGrid.innerHTML = timelineItems.map(t => `
     <div class="tl-item">
       <div class="tl-time">${t.time}</div>
       <div class="tl-label">${t.label}</div>
+      ${t.desc ? `<div class="tl-desc">${t.desc}</div>` : ''}
     </div>
   `).join('');
 
@@ -1294,7 +1341,7 @@ function renderInvitation() {
     {hex:'#D4AF37',name:'Gold'},{hex:'#F5F0E8',name:'Ivory'},
     {hex:'#8B4A4A',name:'Rose'},{hex:'#2C4A3E',name:'Forest'},{hex:'#1A1A2E',name:'Midnight'}
   ];
-  palette.innerHTML = colors.map(c =>
+  if (palette) palette.innerHTML = colors.map(c =>
     `<div class="swatch" style="background:${c.hex}" data-name="${c.name}" title="${c.name}"></div>`
   ).join('');
 
@@ -1316,6 +1363,99 @@ function renderInvitation() {
 
   // Document title
   document.title = `${W.groomEn} & ${W.brideEn} — Wedding Invitation`;
+
+  // Add to Calendar links
+  (function() {
+    var ev = (W.events && W.events[0]) || {};
+    var iso = ev.iso || W.countdownISO;
+    if (!iso) return;
+    var start = new Date(iso);
+    var end   = new Date(start.getTime() + (ev.durationHours || 4) * 3600000);
+    var fmt = function(d) {
+      return d.toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
+    };
+    var title    = (W.groomEn || '') + ' & ' + (W.brideEn || '') + ' Wedding';
+    var venueName = ev.venueEn || W.venue?.nameEn || '';
+    var venueAddr = ev.venueAddress || W.venue?.address || '';
+    var mapsUrl   = ev.googleMaps || W.venue?.googleMaps || '';
+    var location  = venueName + (venueAddr ? ', ' + venueAddr : '');
+    // Derive local UTC offset: compare event timeStr (local) with ISO UTC hour
+    var offsetHrs = 3; // default AST (Riyadh)
+    if (ev.timeStr && ev.iso) {
+      var localH = parseInt(ev.timeStr.split(':')[0]);
+      var utcH   = new Date(ev.iso).getUTCHours();
+      var derived = localH - utcH;
+      if (derived >= -12 && derived <= 14) offsetHrs = derived;
+    }
+    // Parse first time in "3:30 PM" or "3:30 – 4:30 PM" into a UTC Date
+    function parseLocalTime(timeStr, baseDate) {
+      // Determine AM/PM from anywhere in the string
+      var ampm = (timeStr.match(/(AM|PM)/i) || [])[1];
+      if (!ampm) return null;
+      var isPM = ampm.toUpperCase() === 'PM';
+      // Take the FIRST h:mm in the string
+      var m = timeStr.match(/(\d+):(\d+)/);
+      if (!m) return null;
+      var h = parseInt(m[1]), min = parseInt(m[2]);
+      if (isPM && h < 12) h += 12;
+      if (!isPM && h === 12) h = 0;
+      return new Date(Date.UTC(baseDate.getUTCFullYear(), baseDate.getUTCMonth(), baseDate.getUTCDate(), h - offsetHrs, min));
+    }
+    var timeline = W.timeline || [];
+    // Guest arrival = first timeline entry that contains "arrival"
+    var arrivalEntry = timeline.find(function(t){ return t.label && /arrival/i.test(t.label); });
+    // Last real timeline entry for end time
+    var lastEntry = null;
+    for (var ti = timeline.length - 1; ti >= 0; ti--) {
+      if (timeline[ti].label && timeline[ti].label !== 'undefined' && timeline[ti].time && /\d/.test(timeline[ti].time)) {
+        lastEntry = timeline[ti]; break;
+      }
+    }
+    var calStart = arrivalEntry ? (parseLocalTime(arrivalEntry.time, start) || start) : start;
+    var calEnd   = lastEntry   ? (parseLocalTime(lastEntry.time.split('–').pop().trim(), start) || end) : end;
+    if (calEnd <= calStart) calEnd = new Date(calStart.getTime() + (ev.durationHours || 4) * 3600000);
+    // Display label
+    // Build display label: "3:30 PM" from "3:30 – 4:30 PM"
+    var arrivalTimeLabel = (function() {
+      if (!arrivalEntry) return ev.timeStr || '';
+      var full = arrivalEntry.time;
+      var ampm = (full.match(/(AM|PM)/i) || [])[1] || '';
+      var first = (full.match(/(\d+:\d+)/) || [])[1] || '';
+      return first ? first + (ampm ? ' ' + ampm.toUpperCase() : '') : full;
+    })();
+    var calDateEl = document.getElementById('calDate');
+    if (calDateEl) {
+      var dateStr = ev.dateStr || start.toLocaleDateString('en-SA',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+      calDateEl.textContent = dateStr + (arrivalTimeLabel ? ' · ' + arrivalTimeLabel : '');
+    }
+    // Google Calendar
+    var gBtn = document.getElementById('calGoogleBtn');
+    if (gBtn) {
+      var gLocation = location + (mapsUrl ? ' — ' + mapsUrl : '');
+      gBtn.href = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+        + '&text=' + encodeURIComponent(title)
+        + '&dates=' + fmt(calStart) + '/' + fmt(calEnd)
+        + '&location=' + encodeURIComponent(gLocation)
+        + '&details=' + encodeURIComponent('You are cordially invited to the wedding of ' + title + (mapsUrl ? '\n\nVenue: ' + mapsUrl : ''));
+      gBtn.addEventListener('click', function(){ track('calendar_add'); });
+    }
+    // ICS
+    var icsBtn = document.getElementById('calIcsBtn');
+    if (icsBtn) {
+      var ics = [
+        'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Wedding Invitation//EN',
+        'BEGIN:VEVENT',
+        'DTSTART:' + fmt(calStart),
+        'DTEND:'   + fmt(calEnd),
+        'SUMMARY:' + title,
+        'LOCATION:' + location + (mapsUrl ? '\\n' + mapsUrl : ''),
+        'DESCRIPTION:You are cordially invited to the wedding of ' + title + (mapsUrl ? '\\nVenue: ' + mapsUrl : ''),
+        'END:VEVENT','END:VCALENDAR'
+      ].join('\r\n');
+      icsBtn.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
+      icsBtn.addEventListener('click', function(){ track('calendar_add'); });
+    }
+  })();
 
   // RSVP message
   const rsvpMsgEl = document.getElementById('rsvp-message-text');

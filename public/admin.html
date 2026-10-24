@@ -102,6 +102,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--ff);font-size:14px
 .btn-primary:hover{background:var(--gold-mid)}
 .btn-outline{background:transparent;border-color:var(--border-mid);color:var(--text-mid)}
 .btn-outline:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-light)}
+.btn-sm{padding:6px 12px;font-size:.72rem}
 .btn-danger{background:var(--red-bg);color:var(--red);border-color:transparent}
 .btn-row{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
 .share-box{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:20px 24px;display:flex;align-items:center;gap:12px;margin-bottom:20px}
@@ -343,50 +344,110 @@ body{background:var(--bg);color:var(--text);font-family:var(--ff);font-size:14px
   <div class="page" id="page-send">
     <div class="page-header">
       <h1 class="page-title">Send Invitations</h1>
-      <p class="page-desc">Generate personalized links — guest name appears on the envelope</p>
+      <p class="page-desc">Manage your guest list and send personalized invitations</p>
     </div>
 
+    <!-- Guest stats bar -->
+    <div id="guest-stats-bar" style="display:none;margin-bottom:16px">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center">
+          <p style="font-size:1.5rem;font-weight:700;color:var(--gold);margin-bottom:2px" id="gs-total">0</p>
+          <p style="font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Total Guests</p>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center">
+          <p style="font-size:1.5rem;font-weight:700;color:var(--gold);margin-bottom:2px" id="gs-seats">0</p>
+          <p style="font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Total Seats</p>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center">
+          <p style="font-size:1.5rem;font-weight:700;color:#22c55e;margin-bottom:2px" id="gs-confirmed">0</p>
+          <p style="font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Confirmed</p>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center">
+          <p style="font-size:1.5rem;font-weight:700;color:var(--text-muted);margin-bottom:2px" id="gs-pending">0</p>
+          <p style="font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Pending</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guest List -->
     <div class="card">
-      <p class="card-title">Guest Name on Envelope</p>
-      <p style="font-size:.82rem;color:var(--text-mid);margin-bottom:16px">Type a guest name below. It will appear written on the royal envelope on the first screen of the invitation.</p>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Guest Name</label>
-          <input type="text" id="si-name" placeholder="e.g. Ahmad Al-Rashid" oninput="updateSendPreview()">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <p class="card-title" style="margin:0">Guest List</p>
+        <span id="guest-count-badge" style="font-size:.72rem;color:var(--text-muted)"></span>
+      </div>
+
+      <!-- Add guest form -->
+      <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:20px">
+        <p style="font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px">Add New Guest</p>
+        <div style="display:grid;grid-template-columns:90px 1fr 1fr;gap:10px;margin-bottom:10px">
+          <div class="form-group" style="margin:0">
+            <label>Title</label>
+            <select id="gl-title" style="margin-top:6px">
+              <option value="">—</option>
+              <option>Mr.</option>
+              <option>Mrs.</option>
+              <option>Ms.</option>
+              <option>Dr.</option>
+              <option>Prof.</option>
+              <option>Sheikh</option>
+              <option>Eng.</option>
+              <option>H.E.</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>Full Name <span style="color:#e55">*</span></label>
+            <input type="text" id="gl-name" placeholder="e.g. Ahmad Al-Rashid" style="margin-top:6px">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>WhatsApp Number</label>
+            <input type="tel" id="gl-phone" placeholder="+966 50 000 0000" style="margin-top:6px">
+          </div>
         </div>
-        <div class="form-group">
-          <label>WhatsApp Number</label>
-          <input type="tel" id="si-phone" placeholder="+966 50 000 0000" oninput="updateSendPreview()">
+        <div style="display:grid;grid-template-columns:1fr 1fr 70px auto;gap:10px;align-items:end">
+          <div class="form-group" style="margin:0">
+            <label>Group / Relation</label>
+            <select id="gl-group" style="margin-top:6px">
+              <option value="">—</option>
+              <option>Family</option>
+              <option>Friend</option>
+              <option>Colleague</option>
+              <option>VIP</option>
+              <option>Business</option>
+              <option>Neighbour</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>Notes / Dietary</label>
+            <input type="text" id="gl-notes" placeholder="e.g. Vegetarian, wheelchair" style="margin-top:6px">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>Seats</label>
+            <input type="number" id="gl-seats" value="1" min="1" max="20" style="margin-top:6px">
+          </div>
+          <button class="btn" onclick="addGuest()" style="height:42px;white-space:nowrap;margin-bottom:0">+ Add Guest</button>
         </div>
       </div>
 
-      <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-top:16px">
-        <p style="font-size:.68rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px">Envelope Preview</p>
-        <div style="background:linear-gradient(135deg,#1a1000,#2a1800);border:1px solid rgba(212,175,55,0.3);border-radius:6px;padding:16px 20px;text-align:center">
-          <p style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(212,175,55,0.5);margin-bottom:6px">To</p>
-          <p id="envelope-name-preview" style="font-size:1.1rem;color:rgba(212,175,55,0.9);font-family:'Georgia',serif;letter-spacing:.06em">—</p>
-          <p style="font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(212,175,55,0.4);margin-top:8px">You are cordially invited</p>
-        </div>
-      </div>
-
-      <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:6px;padding:14px 16px;margin-top:12px">
-        <p style="font-size:.68rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px">Personalized Invitation Link</p>
-        <code id="si-link-preview" style="font-size:.78rem;color:var(--gold);word-break:break-all">—</code>
-      </div>
-
-      <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:6px;padding:14px 16px;margin-top:8px">
-        <p style="font-size:.68rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">WhatsApp Message Preview</p>
-        <pre id="wa-msg-preview" style="font-size:.78rem;color:var(--text-mid);white-space:pre-wrap;font-family:var(--ff)">—</pre>
-      </div>
-
-      <div class="btn-row" style="margin-top:16px">
-        <a class="btn" id="si-wa-btn" href="#" target="_blank" rel="noopener"
-           style="background:#25D366;border:none;color:#fff;text-decoration:none" onclick="return logSend()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          Send via WhatsApp
-        </a>
-        <button class="btn btn-outline" onclick="copySendLink()">Copy Link</button>
-        <button class="btn btn-outline" onclick="previewEnvelope()">Preview Envelope</button>
+      <!-- Guest table -->
+      <div class="tbl-container">
+        <table class="tbl" id="guest-tbl">
+          <thead>
+            <tr>
+              <th>Guest</th>
+              <th style="text-align:center">Send</th>
+              <th>Phone</th>
+              <th>Group</th>
+              <th style="text-align:center">Seats</th>
+              <th>Table #</th>
+              <th>RSVP</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="guest-list-body">
+            <tr><td colspan="8" class="empty loading">Loading…</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -573,6 +634,7 @@ async function loadAll() {
       loadRSVPs(),
       loadDetails(),
       loadSends(),
+      loadGuests(),
       setupShare(),
     ]);
     drawQR();
@@ -686,7 +748,6 @@ async function loadDetails() {
       `السلام عليكم {guest},\n\nيسعدنا دعوتكم لحضور حفل زفافنا 🌹\n\n{url}`;
     document.getElementById('f-wa-template').value = tmpl;
     WA_TEMPLATE = tmpl;
-    updateSendPreview();
 
     // RSVP message
     document.getElementById('f-rsvp-message').value = data.rsvp_message ||
@@ -742,7 +803,6 @@ async function saveDetails(e) {
     const couple = `${updates.groom_name_en} & ${updates.bride_name_en}`;
     document.getElementById('sidebar-couple').textContent = couple;
     document.getElementById('dash-desc').textContent = couple;
-    updateSendPreview();
     setupShare();
   } catch (err) {
     toast('Save failed: ' + err.message, 'error');
@@ -960,80 +1020,195 @@ document.querySelectorAll('.nav-item').forEach(btn => {
 });
 
 /* =========================================================
-   SEND INVITATIONS
+   SEND INVITATIONS — GUEST LIST
    ========================================================= */
-function updateSendPreview() {
-  const name     = (document.getElementById('si-name')?.value || '').trim();
-  const phone    = (document.getElementById('si-phone')?.value || '').trim();
-  const guestParam = name ? `?guest=${encodeURIComponent(name)}` : '';
-  const inviteLink = INV_URL + guestParam;
+let _guests = [];
 
-  // Envelope preview
-  const envPrev = document.getElementById('envelope-name-preview');
-  if (envPrev) envPrev.textContent = name || '—';
+const RSVP_COLORS = { Confirmed:'#22c55e', Declined:'#ef4444', Pending:'var(--text-muted)' };
+const GROUP_COLORS = { Family:'#a78bfa', Friend:'#38bdf8', Colleague:'#fb923c', VIP:'var(--gold)', Business:'#94a3b8', Neighbour:'#4ade80', Other:'var(--text-muted)' };
 
-  // Link preview
-  const linkPrev = document.getElementById('si-link-preview');
-  if (linkPrev) linkPrev.textContent = INV_URL ? inviteLink : '—';
+async function loadGuests() {
+  if (!INV_SLUG) return;
+  const tbody = document.getElementById('guest-list-body');
+  if (!tbody) return;
+  try {
+    const data = await api('GET', `/admin/invitations/${INV_SLUG}/guests`);
+    _guests = data || [];
+    renderGuestTable();
+  } catch {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty">Could not load guests</td></tr>';
+  }
+}
 
-  // Message preview
-  const tmpl = (document.getElementById('f-wa-template')?.value || WA_TEMPLATE ||
-    'السلام عليكم {guest},\n\nيسعدنا دعوتكم لحضور حفل زفافنا 🌹\n\n{url}');
-  const msg = tmpl.replace('{guest}', name || 'Dear Guest').replace('{url}', inviteLink);
-  const msgPrev = document.getElementById('wa-msg-preview');
-  if (msgPrev) msgPrev.textContent = msg;
+function renderGuestTable() {
+  const tbody = document.getElementById('guest-list-body');
+  if (!tbody) return;
 
-  // WA button
-  const waBtn = document.getElementById('si-wa-btn');
-  if (waBtn && INV_URL) {
-    const waNum = phone.replace(/\D/g, '');
-    waBtn.href = waNum
+  // Stats
+  const totalSeats  = _guests.reduce((s, g) => s + (g.seats || 1), 0);
+  const confirmed   = _guests.filter(g => g.rsvp_status === 'Confirmed').length;
+  const pending     = _guests.filter(g => g.rsvp_status === 'Pending' || !g.rsvp_status).length;
+  const statsBar    = document.getElementById('guest-stats-bar');
+  if (statsBar) statsBar.style.display = _guests.length ? '' : 'none';
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('gs-total',     _guests.length);
+  set('gs-seats',     totalSeats);
+  set('gs-confirmed', confirmed);
+  set('gs-pending',   pending);
+
+  const badge = document.getElementById('guest-count-badge');
+  if (badge) badge.textContent = _guests.length ? `${_guests.length} guest${_guests.length !== 1 ? 's' : ''} · ${totalSeats} seats` : '';
+
+  if (!_guests.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty">No guests yet — fill in the form above</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = _guests.map(g => {
+    const displayName = [(g.title || ''), g.name].filter(Boolean).join(' ');
+    const groupColor  = GROUP_COLORS[g.group_label] || 'var(--text-muted)';
+    const rsvpColor   = RSVP_COLORS[g.rsvp_status]  || RSVP_COLORS.Pending;
+    const link  = INV_URL ? INV_URL + `?guest=${encodeURIComponent(g.name)}` : '';
+    const tmpl  = WA_TEMPLATE || 'السلام عليكم {guest},\n\nيسعدنا دعوتكم لحضور حفل زفافنا 🌹\n\n{url}';
+    const msg   = tmpl.replace('{guest}', displayName).replace('{url}', link);
+    const waNum = (g.phone || '').replace(/\D/g, '');
+    const waHref = link && waNum
       ? `https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`
-      : `https://wa.me/?text=${encodeURIComponent(msg)}`;
+      : link ? `https://wa.me/?text=${encodeURIComponent(msg)}` : '#';
+
+    return `<tr data-id="${g.id}">
+      <td>
+        <div style="font-weight:600;font-size:.85rem">${escHtml(displayName)}</div>
+        ${g.notes ? `<div style="font-size:.72rem;color:var(--text-muted);margin-top:2px">${escHtml(g.notes)}</div>` : ''}
+      </td>
+      <td style="text-align:center">
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:center">
+          <a href="${waHref}" target="_blank" rel="noopener"
+             onclick="logGuestSend('${g.id}')"
+             style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:4px;background:#25D366;color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-decoration:none;white-space:nowrap">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Send
+          </a>
+          <button onclick="copyGuestLink('${g.id}')" title="Copy link"
+            style="padding:3px 8px;font-size:.65rem;background:transparent;border:1px solid var(--border);border-radius:3px;color:var(--text-muted);cursor:pointer;white-space:nowrap">
+            Copy Link
+          </button>
+        </div>
+      </td>
+      <td style="color:var(--text-mid);font-size:.82rem">${escHtml(g.phone || '—')}</td>
+      <td>${g.group_label ? `<span style="font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:${groupColor}">${escHtml(g.group_label)}</span>` : '<span style="color:var(--text-muted)">—</span>'}</td>
+      <td style="text-align:center;font-weight:600">${g.seats || 1}</td>
+      <td>
+        <input type="text" value="${escHtml(g.table_no || '')}" placeholder="—"
+          style="width:56px;padding:4px 6px;font-size:.78rem;background:var(--bg-2);border:1px solid var(--border);border-radius:4px;color:var(--text-dark);text-align:center"
+          onchange="patchGuest('${g.id}','table_no',this.value)">
+      </td>
+      <td>
+        <select style="font-size:.72rem;padding:4px 6px;background:var(--bg-2);border:1px solid var(--border);border-radius:4px;color:${rsvpColor};font-weight:600"
+          onchange="patchGuest('${g.id}','rsvp_status',this.value)">
+          ${['Pending','Confirmed','Declined'].map(s =>
+            `<option value="${s}" ${g.rsvp_status===s||(!g.rsvp_status&&s==='Pending')?'selected':''}>${s}</option>`
+          ).join('')}
+        </select>
+      </td>
+      <td>
+        <button onclick="deleteGuest('${g.id}','${escHtml(g.name)}')" title="Remove guest"
+          style="padding:4px 8px;background:transparent;border:1px solid #ef4444;border-radius:4px;color:#ef4444;cursor:pointer;font-size:.72rem">✕</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function addGuest() {
+  const name  = (document.getElementById('gl-name')?.value || '').trim();
+  const phone = (document.getElementById('gl-phone')?.value || '').trim();
+  if (!name) { toast('Enter a guest name', 'error'); return; }
+  const payload = {
+    title:       (document.getElementById('gl-title')?.value  || '').trim(),
+    name,
+    phone,
+    group_label: (document.getElementById('gl-group')?.value  || '').trim(),
+    notes:       (document.getElementById('gl-notes')?.value  || '').trim(),
+    seats:       parseInt(document.getElementById('gl-seats')?.value || '1'),
+  };
+  try {
+    const g = await api('POST', `/admin/invitations/${INV_SLUG}/guests`, payload);
+    _guests.push(g);
+    renderGuestTable();
+    ['gl-name','gl-phone','gl-notes'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    document.getElementById('gl-seats').value = '1';
+    toast(`${name} added to guest list`, 'success');
+  } catch (e) {
+    toast('Failed to add guest: ' + e.message, 'error');
   }
 }
 
-function copySendLink() {
-  const link = document.getElementById('si-link-preview')?.textContent;
-  if (link && link !== '—') {
-    navigator.clipboard.writeText(link).then(() => toast('Link copied!', 'success'));
-  } else {
-    toast('Enter a guest name first', 'error');
+async function patchGuest(id, field, value) {
+  try {
+    const updated = await api('PATCH', `/admin/guests/${id}`, { [field]: value });
+    const idx = _guests.findIndex(g => g.id === id);
+    if (idx !== -1) _guests[idx] = { ..._guests[idx], ...updated };
+    // Only re-render stats/badge, not whole table (avoid losing focus)
+    const totalSeats = _guests.reduce((s,g) => s + (g.seats||1), 0);
+    const confirmed  = _guests.filter(g => g.rsvp_status === 'Confirmed').length;
+    const pending    = _guests.filter(g => g.rsvp_status === 'Pending' || !g.rsvp_status).length;
+    const set = (elId, v) => { const el = document.getElementById(elId); if (el) el.textContent = v; };
+    set('gs-total',     _guests.length);
+    set('gs-seats',     totalSeats);
+    set('gs-confirmed', confirmed);
+    set('gs-pending',   pending);
+    const badge = document.getElementById('guest-count-badge');
+    if (badge) badge.textContent = `${_guests.length} guest${_guests.length!==1?'s':''} · ${totalSeats} seats`;
+  } catch (e) {
+    toast('Could not save: ' + e.message, 'error');
   }
 }
 
-function previewEnvelope() {
-  const name = (document.getElementById('si-name')?.value || '').trim();
-  const url  = INV_URL + (name ? `?guest=${encodeURIComponent(name)}` : '');
-  window.open(url, '_blank');
+async function deleteGuest(id, name) {
+  if (!confirm(`Remove ${name} from the guest list?`)) return;
+  try {
+    await api('DELETE', `/admin/guests/${id}`);
+    _guests = _guests.filter(g => g.id !== id);
+    renderGuestTable();
+    toast(`${name} removed`, 'success');
+  } catch (e) {
+    toast('Failed to delete: ' + e.message, 'error');
+  }
 }
 
-function logSend() {
-  const name  = document.getElementById('si-name')?.value?.trim();
-  const phone = document.getElementById('si-phone')?.value?.trim();
-  if (!phone) { toast('Enter a phone number', 'error'); return false; }
+function copyGuestLink(id) {
+  const g = _guests.find(x => x.id === id);
+  if (!g || !INV_URL) return;
+  const link = INV_URL + `?guest=${encodeURIComponent(g.name)}`;
+  navigator.clipboard.writeText(link).then(() => toast('Link copied!', 'success'));
+}
 
-  // Log to sends table in UI
+function logGuestSend(id) {
+  const g = _guests.find(x => x.id === id);
+  if (!g) return;
+  const displayName = [(g.title||''), g.name].filter(Boolean).join(' ');
+  if (INV_URL) {
+    const link = INV_URL + `?guest=${encodeURIComponent(g.name)}`;
+    const tmpl = WA_TEMPLATE || 'السلام عليكم {guest},\n\nيسعدنا دعوتكم لحضور حفل زفافنا 🌹\n\n{url}';
+    api('POST', '/admin/send-invite', {
+      slug: INV_SLUG, guestName: displayName, guestPhone: g.phone,
+      messageTemplate: tmpl.replace('{guest}', displayName).replace('{url}', link)
+    }).catch(() => {});
+  }
   const tbody = document.getElementById('sends-body');
   if (tbody) {
     const emptyRow = tbody.querySelector('.empty');
     if (emptyRow) emptyRow.closest('tr').remove();
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${escHtml(name || '—')}</td><td>${escHtml(phone)}</td><td>${new Date().toLocaleString()}</td>`;
+    tr.innerHTML = `<td>${escHtml(displayName)}</td><td>${escHtml(g.phone||'—')}</td><td>${new Date().toLocaleString()}</td>`;
     tbody.prepend(tr);
   }
-
-  // Log to server (fire-and-forget)
-  if (INV_URL) {
-    api('POST', '/admin/send-invite', {
-      slug: INV_SLUG, guestName: name, guestPhone: phone,
-      messageTemplate: document.getElementById('wa-msg-preview')?.textContent
-    }).catch(() => {});
-  }
-
-  toast(`Opening WhatsApp for ${name || phone}`, 'success');
-  return true;
 }
+
+// Keep legacy stubs so old references don't throw
+function closeSendPanel(){}
+function copySendPanelLink(){}
+function logSendFromPanel(){}
 
 async function loadSends() {
   if (!INV_SLUG) return;
@@ -1067,7 +1242,6 @@ function setupShare() {
   const prevEl = document.getElementById('wa-template-preview');
   if (prevEl) prevEl.textContent = tmplFull;
 
-  updateSendPreview();
 }
 
 function copyLink() {
