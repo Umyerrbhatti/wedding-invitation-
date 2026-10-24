@@ -192,6 +192,21 @@ body{
 .env-prompt-visible .env-tap{opacity:1}
 .env-tap.pulsing{animation:pulseTap 2.2s ease-in-out infinite}
 @keyframes pulseTap{0%,100%{opacity:0.55}50%{opacity:1}}
+/* Guest name on envelope */
+.env-guest-name{
+  position:absolute;bottom:118px;left:0;right:0;z-index:5;
+  font-family:var(--ff-display);
+  font-size:clamp(1.1rem,4vw,1.6rem);
+  font-weight:400;
+  font-style:normal;
+  color:rgba(212,175,55,1);
+  letter-spacing:0.08em;
+  text-align:center;
+  text-shadow:0 2px 20px rgba(0,0,0,0.8),0 0 60px rgba(212,175,55,0.3);
+  opacity:0;
+  transition:opacity 1.4s ease;
+}
+.env-prompt-visible .env-guest-name{opacity:1}
 
 /* ── MUSIC BUTTON ──────────────────────────────────────── */
 #music-btn{
@@ -929,6 +944,7 @@ section{padding:80px 24px;max-width:680px;margin:0 auto}
       <div class="env-letter">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
     </div>
   </div>
+  <p class="env-guest-name" id="env-guest-name"></p>
   <p class="env-tagline">You are cordially invited</p>
   <p class="env-tap">Tap to open</p>
 </div>
@@ -1060,8 +1076,9 @@ section{padding:80px 24px;max-width:680px;margin:0 auto}
   <!-- DRESS CODE -->
   <!-- RSVP -->
   <section class="rsvp-section scroll-reveal" id="rsvpSection">
-    <p class="section-eyebrow">Kindly Reply</p>
+    <p class="section-eyebrow">Kindly Respond</p>
     <h2 class="section-title">RSVP</h2>
+    <p id="rsvp-message-text" style="max-width:520px;margin:0 auto 28px;font-size:.92rem;line-height:1.75;color:var(--text-muted);white-space:pre-line;display:none"></p>
     <form class="rsvp-form" id="rsvpForm">
       <input type="text" id="rsvp-name" placeholder="Your full name" required>
       <div class="rsvp-row">
@@ -1157,6 +1174,12 @@ if (typeof W === 'undefined') {
 const urlParams = new URLSearchParams(window.location.search);
 const guestName = W.guestName || urlParams.get('guest') || urlParams.get('name') || '';
 
+/* ── Guest name on envelope ─────────────────────────────── */
+if (guestName) {
+  const envGuestEl = document.getElementById('env-guest-name');
+  if (envGuestEl) envGuestEl.textContent = guestName;
+}
+
 /* ── Populate invitation ────────────────────────────────── */
 function pad(n){return String(n).padStart(2,'0')}
 
@@ -1247,6 +1270,16 @@ function renderInvitation() {
 
   // Document title
   document.title = `${W.groomEn} & ${W.brideEn} — Wedding Invitation`;
+
+  // RSVP message
+  const rsvpMsgEl = document.getElementById('rsvp-message-text');
+  if (rsvpMsgEl && W.rsvpMessage) {
+    const deadlineStr = W.rsvpDeadline
+      ? new Date(W.rsvpDeadline).toLocaleDateString('en-SA', { day:'numeric', month:'long', year:'numeric' })
+      : 'the deadline';
+    rsvpMsgEl.textContent = W.rsvpMessage.replace(/\[RSVP Deadline\]/gi, deadlineStr);
+    rsvpMsgEl.style.display = 'block';
+  }
 }
 
 /* ── Countdown ────────────────────────────────────────── */

@@ -251,6 +251,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--ff);font-size:14px
           <div class="form-group"><label>Max Guests Per RSVP</label><input type="number" id="f-max-guests" min="1" max="20" value="6"></div>
           <div class="form-group"><label>Contact Phone</label><input type="tel" id="f-phone" placeholder="+966 50 000 0000"></div>
           <div class="form-group"><label>Contact Email</label><input type="email" id="f-email" placeholder="wedding@family.com"></div>
+          <div class="form-group full">
+            <label>RSVP Message <span style="font-size:.7rem;color:var(--text-muted)">(shown above the RSVP form — use [RSVP Deadline] for the date)</span></label>
+            <textarea id="f-rsvp-message" rows="4" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg-2);font-size:.82rem;color:var(--text);resize:vertical;font-family:var(--ff)" placeholder="We would be honoured by your presence.&#10;&#10;Kindly confirm your attendance by [RSVP Deadline] so that we may make the necessary arrangements."></textarea>
+          </div>
         </div>
       </div>
 
@@ -677,6 +681,10 @@ async function loadDetails() {
     document.getElementById('f-wa-template').value = tmpl;
     WA_TEMPLATE = tmpl;
     updateSendPreview();
+
+    // RSVP message
+    document.getElementById('f-rsvp-message').value = data.rsvp_message ||
+      'We would be honoured by your presence.\n\nKindly confirm your attendance by [RSVP Deadline] so that we may make the necessary arrangements.';
   } catch (err) {
     toast('Could not load invitation details: ' + err.message, 'error');
   }
@@ -712,6 +720,7 @@ async function saveDetails(e) {
     music_url:             document.getElementById('f-music-url').value.trim() || null,
     bg_photo_url:          document.getElementById('f-bg-photo').value.trim() || null,
     invite_message_template: document.getElementById('f-wa-template').value.trim(),
+    rsvp_message:            document.getElementById('f-rsvp-message').value.trim() || null,
     timeline_items:        timeline,
   };
 
