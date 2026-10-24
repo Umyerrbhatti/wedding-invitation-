@@ -475,6 +475,25 @@ section{padding:80px 24px;max-width:680px;margin:0 auto}
 }
 
 /* ── ARABIC TEXT ──────────────────────────────────────── */
+/* ── WELCOME MESSAGE ───────────────────────────────────── */
+.welcome-section{text-align:center;max-width:680px;margin:0 auto;padding:48px 32px}
+.welcome-body{
+  font-family:var(--ff-display);font-size:clamp(0.95rem,2.6vw,1.15rem);
+  color:var(--text-dark);line-height:2;font-weight:300;font-style:italic;
+  white-space:pre-line;
+}
+.welcome-body .welcome-event-title{
+  display:block;font-size:clamp(1.1rem,3vw,1.4rem);font-weight:600;
+  font-style:normal;letter-spacing:.06em;color:var(--gold);margin-bottom:1.4em;
+}
+.welcome-body .welcome-name{
+  display:block;font-size:clamp(1.1rem,3vw,1.35rem);font-weight:600;
+  font-style:normal;color:var(--text-dark);margin:.4em 0;
+}
+.welcome-body .welcome-amp{
+  display:block;font-size:1.6rem;color:var(--gold);margin:.1em 0;font-style:normal;
+}
+
 .arabic-section{
   text-align:center;
   background:linear-gradient(135deg,rgba(184,134,26,0.06),rgba(184,134,26,0.02));
@@ -1038,6 +1057,13 @@ section{padding:80px 24px;max-width:680px;margin:0 auto}
     </div>
   </section>
 
+  <!-- WELCOME MESSAGE -->
+  <section class="welcome-section scroll-reveal" id="welcomeSection" style="display:none">
+    <div class="divider"><span class="div-sym">✦</span></div>
+    <div class="welcome-body" id="welcomeBody"></div>
+    <div class="divider"><span class="div-sym">✦</span></div>
+  </section>
+
   <!-- ARABIC INVITATION TEXT -->
   <section class="arabic-section scroll-reveal" id="arabicSection">
     <div class="divider"><span class="div-sym">✦</span></div>
@@ -1204,6 +1230,26 @@ function renderInvitation() {
     const d = new Date(firstEvent?.iso || W.countdownISO);
     document.getElementById('heroDate').textContent =
       d.toLocaleDateString('en-SA',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  }
+
+  // Welcome message
+  const welcomeSection = document.getElementById('welcomeSection');
+  const welcomeBody    = document.getElementById('welcomeBody');
+  if (W.welcomeMessage && welcomeBody) {
+    const deadlineStr = W.rsvpDeadline
+      ? new Date(W.rsvpDeadline).toLocaleDateString('en-SA',{day:'numeric',month:'long',year:'numeric'})
+      : 'the deadline';
+    const rendered = W.welcomeMessage
+      .replace(/\[BRIDE'?S? NAME\]/gi, `<span class="welcome-name">${W.brideEn}</span>`)
+      .replace(/\[GROOM'?S? NAME\]/gi, `<span class="welcome-name">${W.groomEn}</span>`)
+      .replace(/\[BRIDE\]/gi,           `<span class="welcome-name">${W.brideEn}</span>`)
+      .replace(/\[GROOM\]/gi,           `<span class="welcome-name">${W.groomEn}</span>`)
+      .replace(/\[RSVP Deadline\]/gi,   deadlineStr)
+      .replace(/^(&amp;|&)\s*$/gm,      '<span class="welcome-amp">&</span>')
+      // First non-empty line becomes the event title
+      .replace(/^(.+)/, '<span class="welcome-event-title">$1</span>');
+    welcomeBody.innerHTML = rendered;
+    welcomeSection.style.display = 'block';
   }
 
   // Invitation text

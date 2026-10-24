@@ -245,6 +245,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--ff);font-size:14px
       </div>
 
       <div class="card">
+        <p class="card-title">Welcome Message <span style="font-size:.72rem;font-weight:400;color:var(--text-muted)">(shown on invitation after the names)</span></p>
+        <p style="font-size:.78rem;color:var(--text-muted);margin-bottom:10px">Use <code style="font-size:.76rem;background:var(--bg-2);padding:1px 4px;border-radius:3px">[BRIDE'S NAME]</code> and <code style="font-size:.76rem;background:var(--bg-2);padding:1px 4px;border-radius:3px">[GROOM'S NAME]</code> — the first line becomes the section title. Each line break is preserved.</p>
+        <textarea id="f-welcome-message" rows="12" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg-2);font-size:.82rem;color:var(--text);resize:vertical;font-family:var(--ff)" placeholder="The Wedding Reception&#10;&#10;Together with our families, and with gratitude to Allah for His countless blessings,&#10;&#10;we cordially invite you to join us in celebrating the wedding reception of&#10;&#10;[BRIDE'S NAME]&#10;&#10;&amp;&#10;&#10;[GROOM'S NAME]&#10;&#10;Your presence and blessings would make this occasion all the more special."></textarea>
+      </div>
+
+      <div class="card">
         <p class="card-title">Contact &amp; RSVP Settings</p>
         <div class="form-grid">
           <div class="form-group"><label>RSVP Deadline</label><input type="date" id="f-rsvp-deadline"></div>
@@ -685,6 +691,9 @@ async function loadDetails() {
     // RSVP message
     document.getElementById('f-rsvp-message').value = data.rsvp_message ||
       'We would be honoured by your presence.\n\nKindly confirm your attendance by [RSVP Deadline] so that we may make the necessary arrangements.';
+
+    // Welcome message
+    document.getElementById('f-welcome-message').value = data.welcome_message || '';
   } catch (err) {
     toast('Could not load invitation details: ' + err.message, 'error');
   }
@@ -721,6 +730,7 @@ async function saveDetails(e) {
     bg_photo_url:          document.getElementById('f-bg-photo').value.trim() || null,
     invite_message_template: document.getElementById('f-wa-template').value.trim(),
     rsvp_message:            document.getElementById('f-rsvp-message').value.trim() || null,
+    welcome_message:         document.getElementById('f-welcome-message').value.trim() || null,
     timeline_items:        timeline,
   };
 

@@ -287,7 +287,7 @@ app.put('/api/admin/invitation/:id', requireAdmin, async (req, res) => {
     'bride_name_en','bride_name_ar','bride_family_en','bride_family_ar',
     'contact_phone','contact_email','share_text','rsvp_deadline',
     'rsvp_enabled','max_guests_per_rsvp','is_active',
-    'music_url','bg_photo_url','dress_code_colors','invite_message_template','rsvp_message',
+    'music_url','bg_photo_url','dress_code_colors','invite_message_template','rsvp_message','welcome_message',
     'timeline_items',
   ];
   const updates = Object.fromEntries(
@@ -469,6 +469,7 @@ function buildConfig(inv, guestName = '') {
     timeline:        inv.timeline_items || null,
     inviteMessageTemplate: inv.invite_message_template || null,
     rsvpMessage:           inv.rsvp_message || null,
+    welcomeMessage:        inv.welcome_message || null,
     events,
     venue,
     countdownISO:    inv.events?.[0]?.date_gregorian || '',
