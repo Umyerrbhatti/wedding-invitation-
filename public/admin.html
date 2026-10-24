@@ -738,9 +738,16 @@ function renderEventCard(ev) {
   const tm = ev.date_gregorian ? new Date(ev.date_gregorian).toTimeString().slice(0, 5) : '';
   return `
   <div class="card" id="ev-card-${ev.id}">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border)">
-      <p style="font-size:.9rem;font-weight:600;margin:0" id="ev-title-${ev.id}">${escHtml(ev.badge_en || ev.name_en)}</p>
-      <span id="del-zone-${ev.id}">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border);gap:12px">
+      <div style="flex:1;min-width:0">
+        <label style="font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:3px;display:block">Event Title (shown on invitation)</label>
+        <input type="text" id="ev-badge-${ev.id}" value="${escAttr(ev.badge_en || ev.name_en)}"
+          style="font-size:.95rem;font-weight:600;background:transparent;border:1px solid transparent;border-radius:4px;padding:3px 6px;color:inherit;width:100%;box-sizing:border-box;transition:border-color .15s"
+          onfocus="this.style.borderColor='var(--gold)';this.style.background='var(--card-bg)'"
+          onblur="this.style.borderColor='transparent';this.style.background='transparent'"
+          placeholder="Event title…">
+      </div>
+      <span id="del-zone-${ev.id}" style="flex-shrink:0">
         <button class="btn btn-danger" style="padding:5px 12px;font-size:.72rem" onclick="askDeleteEvent('${ev.id}')">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
           Delete
@@ -749,16 +756,12 @@ function renderEventCard(ev) {
     </div>
     <div class="form-grid">
       <div class="form-group">
-        <label>Event Name (English)</label>
+        <label>Full Name (English)</label>
         <input type="text" value="${escAttr(ev.name_en)}" id="ev-en-${ev.id}">
       </div>
       <div class="form-group">
-        <label>Event Name (Arabic)</label>
+        <label>Full Name (Arabic)</label>
         <input type="text" class="ar-input" value="${escAttr(ev.name_ar || '')}" id="ev-ar-${ev.id}">
-      </div>
-      <div class="form-group">
-        <label>Badge / Label</label>
-        <input type="text" value="${escAttr(ev.badge_en || '')}" id="ev-badge-${ev.id}">
       </div>
       <div class="form-group">
         <label>Hijri Date (display)</label>
@@ -906,8 +909,7 @@ async function saveEvent(id) {
   try {
     await api('PUT', `/admin/event/${id}`, updates);
     // Update card title
-    const titleEl = document.getElementById(`ev-title-${id}`);
-    if (titleEl) titleEl.textContent = updates.badge_en || updates.name_en;
+    // header input already shows the new value; nothing extra needed
     toast('Event saved!', 'success');
   } catch (err) {
     toast('Save failed: ' + err.message, 'error');
