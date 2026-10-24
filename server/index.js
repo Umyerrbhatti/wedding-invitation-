@@ -141,6 +141,13 @@ app.post('/api/rsvp', async (req, res) => {
 
   if (error) return res.status(500).json({ error: 'Failed to save RSVP' });
 
+  // Mirror RSVP status back onto the guest list entry (fire-and-forget)
+  supabaseService.from('guests')
+    .update({ rsvp_status: attending ? 'Confirmed' : 'Declined' })
+    .eq('invitation_id', inv.id)
+    .ilike('name', name.trim())
+    .then(() => {});
+
   // Track event
   supabaseService.from('analytics_events').insert({
     invitation_id: inv.id,

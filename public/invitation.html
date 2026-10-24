@@ -1684,6 +1684,16 @@ document.querySelectorAll('.scroll-reveal').forEach(function(el) { observer.obse
 
 /* ── Init ────────────────────────────────────────────── */
 renderInvitation();
+
+/* ── Pre-fill RSVP name from guest URL param ─────────────── */
+if (guestName) {
+  const rsvpNameInput = document.getElementById('rsvp-name');
+  if (rsvpNameInput) {
+    rsvpNameInput.value = guestName;
+    rsvpNameInput.style.borderColor = 'var(--gold)';
+    rsvpNameInput.style.background  = 'rgba(212,175,55,0.06)';
+  }
+}
 </script>
 </body>
 </html>
