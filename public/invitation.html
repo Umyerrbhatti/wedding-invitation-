@@ -1233,6 +1233,7 @@ if (typeof W === 'undefined') {
 /* ── Parse guest name from URL ─────────────────────────── */
 const urlParams = new URLSearchParams(window.location.search);
 const guestName = W.guestName || urlParams.get('guest') || urlParams.get('name') || '';
+const invSide   = urlParams.get('side') || 'groom';
 
 /* ── Guest name on envelope ─────────────────────────────── */
 if (guestName) {
@@ -1244,6 +1245,15 @@ if (guestName) {
 function pad(n){return String(n).padStart(2,'0')}
 
 function renderInvitation() {
+  // Side-aware name helpers: bride guests see her name first
+  const isBride    = invSide === 'bride';
+  const nameA      = isBride ? W.brideEn       : W.groomEn;
+  const nameB      = isBride ? W.groomEn       : W.brideEn;
+  const familyA    = isBride ? W.brideFamilyEn : W.groomFamilyEn;
+  const familyB    = isBride ? W.groomFamilyEn : W.brideFamilyEn;
+  const roleA      = isBride ? 'Daughter' : 'Son';
+  const roleB      = isBride ? 'Son'      : 'Daughter';
+
   // Guest greeting
   const greetEl = document.getElementById('guestGreeting');
   if (guestName) {
@@ -1254,9 +1264,9 @@ function renderInvitation() {
 
   // Couple names
   document.getElementById('coupleAr').innerHTML =
-    `${W.groomEn}<br><small style="font-size:0.52em;font-family:var(--ff-ui);font-weight:300;letter-spacing:0.12em;color:var(--text-muted)">Son of Mr. & Mrs. ${W.groomFamilyEn}</small>`;
+    `${nameA}<br><small style="font-size:0.52em;font-family:var(--ff-ui);font-weight:300;letter-spacing:0.12em;color:var(--text-muted)">${roleA} of Mr. & Mrs. ${familyA}</small>`;
   document.getElementById('coupleEn').innerHTML =
-    `${W.brideEn}<br><small style="font-size:0.52em;font-family:var(--ff-ui);font-weight:300;letter-spacing:0.12em;color:var(--text-muted)">Daughter of Mr. & Mrs. ${W.brideFamilyEn}</small>`;
+    `${nameB}<br><small style="font-size:0.52em;font-family:var(--ff-ui);font-weight:300;letter-spacing:0.12em;color:var(--text-muted)">${roleB} of Mr. & Mrs. ${familyB}</small>`;
 
   // Hero date — pull from first event if available
   const firstEvent = W.events?.[0];
@@ -1290,10 +1300,10 @@ function renderInvitation() {
 
   // Invitation text
   document.getElementById('arabicText').innerHTML =
-    `The families of <strong>${W.groomFamilyEn}</strong><br>` +
-    `and <strong>${W.brideFamilyEn}</strong><br>` +
+    `The families of <strong>${familyA}</strong><br>` +
+    `and <strong>${familyB}</strong><br>` +
     `joyfully invite you to the wedding celebration of<br>` +
-    `<strong>${W.groomEn}</strong> &amp; <strong>${W.brideEn}</strong>`;
+    `<strong>${nameA}</strong> &amp; <strong>${nameB}</strong>`;
 
   // Timeline — merge alternating description rows then render
   const tlGrid = document.getElementById('timelineGrid');
@@ -1352,7 +1362,7 @@ function renderInvitation() {
   document.getElementById('waShareBtn').href = `https://wa.me/?text=${shareMsg}`;
 
   // Footer names
-  document.getElementById('footerNames').textContent = `${W.groomEn} & ${W.brideEn}`;
+  document.getElementById('footerNames').textContent = `${nameA} & ${nameB}`;
 
   // Music
   if (W.musicUrl) {
@@ -1362,7 +1372,7 @@ function renderInvitation() {
   }
 
   // Document title
-  document.title = `${W.groomEn} & ${W.brideEn} — Wedding Invitation`;
+  document.title = `${nameA} & ${nameB} — Wedding Invitation`;
 
   // Add to Calendar links
   (function() {
@@ -1374,7 +1384,7 @@ function renderInvitation() {
     var fmt = function(d) {
       return d.toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
     };
-    var title    = (W.groomEn || '') + ' & ' + (W.brideEn || '') + ' Wedding';
+    var title    = nameA + ' & ' + nameB + ' Wedding';
     var venueName = ev.venueEn || W.venue?.nameEn || '';
     var venueAddr = ev.venueAddress || W.venue?.address || '';
     var mapsUrl   = ev.googleMaps || W.venue?.googleMaps || '';

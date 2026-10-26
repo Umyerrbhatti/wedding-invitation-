@@ -403,7 +403,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--ff);font-size:14px
             <input type="tel" id="gl-phone" placeholder="+966 50 000 0000" style="margin-top:6px">
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 70px auto;gap:10px;align-items:end">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 70px auto;gap:10px;align-items:end">
           <div class="form-group" style="margin:0">
             <label>Group / Relation</label>
             <select id="gl-group" style="margin-top:6px">
@@ -415,6 +415,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--ff);font-size:14px
               <option>Business</option>
               <option>Neighbour</option>
               <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>Side</label>
+            <select id="gl-side" style="margin-top:6px">
+              <option value="groom">Groom's Side</option>
+              <option value="bride">Bride's Side</option>
             </select>
           </div>
           <div class="form-group" style="margin:0">
@@ -601,6 +608,8 @@ function nav(page) {
       i.setAttribute('aria-current', 'page');
     }
   });
+  // Refresh guest list whenever the Send page is opened so RSVP updates show
+  if (page === 'send') loadGuests();
 }
 
 /* =========================================================
@@ -1068,7 +1077,8 @@ function renderGuestTable() {
     const displayName = [(g.title || ''), g.name].filter(Boolean).join(' ');
     const groupColor  = GROUP_COLORS[g.group_label] || 'var(--text-muted)';
     const rsvpColor   = RSVP_COLORS[g.rsvp_status]  || RSVP_COLORS.Pending;
-    const link  = INV_URL ? INV_URL + `?guest=${encodeURIComponent(g.name)}` : '';
+    const side  = g.side === 'bride' ? 'bride' : 'groom';
+    const link  = INV_URL ? INV_URL + `?guest=${encodeURIComponent(g.name)}&side=${side}` : '';
     const tmpl  = WA_TEMPLATE || 'السلام عليكم {guest},\n\nيسعدنا دعوتكم لحضور حفل زفافنا 🌹\n\n{url}';
     const msg   = tmpl.replace('{guest}', displayName).replace('{url}', link);
     const waNum = (g.phone || '').replace(/\D/g, '');
@@ -1079,6 +1089,12 @@ function renderGuestTable() {
     return `<tr data-id="${g.id}">
       <td>
         <div style="font-weight:600;font-size:.85rem">${escHtml(displayName)}</div>
+        <div style="margin-top:3px">
+          <span style="font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:1px 6px;border-radius:3px;
+            ${side==='bride'?'background:rgba(236,72,153,.15);color:#f472b6':'background:rgba(99,163,255,.15);color:#7ab8ff'}">
+            ${side==='bride'?'Bride':'Groom'}
+          </span>
+        </div>
         ${g.notes ? `<div style="font-size:.72rem;color:var(--text-muted);margin-top:2px">${escHtml(g.notes)}</div>` : ''}
       </td>
       <td style="text-align:center">
@@ -1128,6 +1144,7 @@ async function addGuest() {
     name,
     phone,
     group_label: (document.getElementById('gl-group')?.value  || '').trim(),
+    side:        (document.getElementById('gl-side')?.value   || 'groom'),
     notes:       (document.getElementById('gl-notes')?.value  || '').trim(),
     seats:       parseInt(document.getElementById('gl-seats')?.value || '1'),
   };
@@ -1179,7 +1196,8 @@ async function deleteGuest(id, name) {
 function copyGuestLink(id) {
   const g = _guests.find(x => x.id === id);
   if (!g || !INV_URL) return;
-  const link = INV_URL + `?guest=${encodeURIComponent(g.name)}`;
+  const side = g.side === 'bride' ? 'bride' : 'groom';
+  const link = INV_URL + `?guest=${encodeURIComponent(g.name)}&side=${side}`;
   navigator.clipboard.writeText(link).then(() => toast('Link copied!', 'success'));
 }
 
@@ -1188,7 +1206,8 @@ function logGuestSend(id) {
   if (!g) return;
   const displayName = [(g.title||''), g.name].filter(Boolean).join(' ');
   if (INV_URL) {
-    const link = INV_URL + `?guest=${encodeURIComponent(g.name)}`;
+    const side = g.side === 'bride' ? 'bride' : 'groom';
+    const link = INV_URL + `?guest=${encodeURIComponent(g.name)}&side=${side}`;
     const tmpl = WA_TEMPLATE || 'السلام عليكم {guest},\n\nيسعدنا دعوتكم لحضور حفل زفافنا 🌹\n\n{url}';
     api('POST', '/admin/send-invite', {
       slug: INV_SLUG, guestName: displayName, guestPhone: g.phone,

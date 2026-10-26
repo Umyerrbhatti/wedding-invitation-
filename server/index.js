@@ -297,7 +297,7 @@ app.get('/api/admin/invitations/:slug/guests', requireAdmin, async (req, res) =>
 });
 
 app.post('/api/admin/invitations/:slug/guests', requireAdmin, async (req, res) => {
-  const { name, phone, notes, title, group_label, seats, table_no } = req.body;
+  const { name, phone, notes, title, group_label, seats, table_no, side } = req.body;
   if (!name?.trim()) return res.status(400).json({ error: 'name required' });
   const { data: inv } = await supabaseService.from('invitations').select('id').eq('slug', req.params.slug).single();
   if (!inv) return res.status(404).json({ error: 'invitation not found' });
@@ -310,13 +310,14 @@ app.post('/api/admin/invitations/:slug/guests', requireAdmin, async (req, res) =
     group_label: group_label?.trim() || null,
     seats: seats ? parseInt(seats) : 1,
     table_no: table_no?.trim() || null,
+    side: side === 'bride' ? 'bride' : 'groom',
   }).select().single();
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });
 
 app.patch('/api/admin/guests/:id', requireAdmin, async (req, res) => {
-  const allowed = ['rsvp_status', 'table_no', 'notes', 'seats'];
+  const allowed = ['rsvp_status', 'table_no', 'notes', 'seats', 'side'];
   const updates = {};
   for (const k of allowed) if (req.body[k] !== undefined) updates[k] = req.body[k];
   if (!Object.keys(updates).length) return res.status(400).json({ error: 'nothing to update' });
