@@ -1264,9 +1264,9 @@ function renderInvitation() {
 
   // Couple names
   document.getElementById('coupleAr').innerHTML =
-    `${nameA}<br><small style="font-size:0.52em;font-family:var(--ff-ui);font-weight:300;letter-spacing:0.12em;color:var(--text-muted)">${roleA} of Mr. & Mrs. ${familyA}</small>`;
+    `${nameA}<br><small style="font-size:0.52em;font-family:var(--ff-ui);font-weight:300;letter-spacing:0.12em;color:var(--text-muted)">${roleA} of ${familyA}</small>`;
   document.getElementById('coupleEn').innerHTML =
-    `${nameB}<br><small style="font-size:0.52em;font-family:var(--ff-ui);font-weight:300;letter-spacing:0.12em;color:var(--text-muted)">${roleB} of Mr. & Mrs. ${familyB}</small>`;
+    `${nameB}<br><small style="font-size:0.52em;font-family:var(--ff-ui);font-weight:300;letter-spacing:0.12em;color:var(--text-muted)">${roleB} of ${familyB}</small>`;
 
   // Hero date — pull from first event if available
   const firstEvent = W.events?.[0];
