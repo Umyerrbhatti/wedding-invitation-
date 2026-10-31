@@ -1034,15 +1034,15 @@ section{padding:80px 24px;max-width:680px;margin:0 auto}
           points="0,635 7,631 14,635 21,631 28,635 35,631 42,635 49,631 56,635 63,631 70,635 77,631 84,635 91,631 98,635 105,631 112,635 119,631 126,635 133,631 140,635 147,631 154,635 161,631 168,635 175,631 182,635 189,631 196,635 203,631 210,635 217,631 224,635 231,631 238,635 245,631 252,635 259,631 266,635 273,631 280,635 287,631 294,635 301,631 308,635 315,631 322,635 329,631 336,635 343,631 350,635 357,631 360,635"/>
       </svg>
 
-      <!-- Double doors -->
-      <div class="palace-doors" id="palaceDoors">
-        <div class="palace-door door-left">
-          <div class="door-handle"></div>
-        </div>
-        <div class="palace-door door-right">
-          <div class="door-handle"></div>
-        </div>
-      </div>
+      <!-- Kling 3.0 cinematic narrative video (replaces CSS doors) -->
+      <!-- REPLACE src="" with your Kling video URL when ready -->
+      <video id="palaceDoors" autoplay muted playsinline
+        style="width:min(260px,62vw);height:min(380px,65vh);object-fit:cover;
+               border-radius:clamp(30px,10vw,60px) clamp(30px,10vw,60px) 4px 4px / clamp(40px,12vw,80px) clamp(40px,12vw,80px) 4px 4px;
+               filter:drop-shadow(0 12px 40px rgba(0,0,0,0.7));
+               margin-bottom:clamp(24px,5vh,48px);display:block"
+        src="/kling-cinematic.mp4">
+      </video>
 
       <!-- Palace invitation text -->
       <div class="palace-text">
