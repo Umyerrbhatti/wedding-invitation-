@@ -23,6 +23,7 @@ CREATE TABLE invitations (
   -- Display settings
   theme           TEXT DEFAULT 'midnight-gold',  -- future: multiple themes
   language        TEXT DEFAULT 'ar-en',          -- 'ar-en' | 'en' | 'ar'
+  timezone        TEXT NOT NULL DEFAULT 'UTC',   -- IANA zone for all event times, e.g. 'Asia/Karachi'
 
   -- Contact / sharing
   contact_phone   TEXT,

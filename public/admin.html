@@ -255,6 +255,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--ff);font-size:14px
         <p class="card-title">Contact &amp; RSVP Settings</p>
         <div class="form-grid">
           <div class="form-group"><label>RSVP Deadline</label><input type="date" id="f-rsvp-deadline"></div>
+          <div class="form-group"><label>Timezone (all event times use this)</label><select id="f-timezone"></select></div>
           <div class="form-group"><label>Max Guests Per RSVP</label><input type="number" id="f-max-guests" min="1" max="20" value="6"></div>
           <div class="form-group"><label>Contact Phone</label><input type="tel" id="f-phone" placeholder="+966 50 000 0000"></div>
           <div class="form-group"><label>Contact Email</label><input type="email" id="f-email" placeholder="wedding@family.com"></div>
@@ -519,6 +520,7 @@ let AUTH_TOKEN  = sessionStorage.getItem('admin_token') || '';
 let INV_ID      = null;   // UUID of the current invitation
 let INV_SLUG    = null;   // slug of the current invitation
 let INV_URL     = '';     // full public URL
+let LOADED_TZ   = 'UTC';  // invitation timezone as last loaded/saved
 let WA_TEMPLATE = '';     // current WhatsApp template
 let rsvpData    = [];     // cached RSVP list for CSV export
 
@@ -740,6 +742,8 @@ async function loadDetails() {
     document.getElementById('f-bridefam-en').value = data.bride_family_en  || '';
     document.getElementById('f-bridefam-ar').value = data.bride_family_ar  || '';
     document.getElementById('f-rsvp-deadline').value = data.rsvp_deadline   ? data.rsvp_deadline.slice(0,10) : '';
+    LOADED_TZ = data.timezone || 'UTC';
+    fillTimezones(LOADED_TZ);
     document.getElementById('f-max-guests').value  = data.max_guests_per_rsvp || 6;
     document.getElementById('f-phone').value       = data.contact_phone    || '';
     document.getElementById('f-email').value       = data.contact_email    || '';
@@ -772,6 +776,17 @@ async function loadDetails() {
 /* =========================================================
    DETAILS FORM — SAVE
    ========================================================= */
+function fillTimezones(selected) {
+  const sel = document.getElementById('f-timezone');
+  let zones = [];
+  try { zones = Intl.supportedValuesOf('timeZone'); } catch { /* older browser */ }
+  if (!zones.length) zones = ['Asia/Karachi','Asia/Riyadh','Asia/Dubai','Asia/Kolkata','Europe/London','America/New_York'];
+  if (!zones.includes('UTC')) zones.unshift('UTC');
+  if (selected && !zones.includes(selected)) zones.unshift(selected);
+  sel.innerHTML = zones.map(z => `<option value="${escHtml(z)}">${escHtml(z.replace(/_/g, ' '))}</option>`).join('');
+  sel.value = selected;
+}
+
 async function saveDetails(e) {
   e.preventDefault();
   if (!INV_ID) { toast('Invitation not loaded', 'error'); return; }
@@ -804,8 +819,14 @@ async function saveDetails(e) {
     timeline_items:        timeline,
   };
 
+  // Only send the timezone when it changed; event times are then re-anchored server-side
+  const tz = document.getElementById('f-timezone').value;
+  const tzChanged = tz && tz !== LOADED_TZ;
+  if (tzChanged) updates.timezone = tz;
+
   try {
     await api('PUT', `/admin/invitation/${INV_ID}`, updates);
+    if (tzChanged) { LOADED_TZ = tz; loadEvents(); }
     WA_TEMPLATE = updates.invite_message_template;
     toast('Saved successfully!', 'success');
     // Refresh sidebar couple name
@@ -839,8 +860,9 @@ function autoFillHijri(id, dateStr) {
 }
 
 function renderEventCard(ev) {
-  const dt = ev.date_gregorian ? ev.date_gregorian.slice(0, 10) : '';
-  const tm = ev.date_gregorian ? new Date(ev.date_gregorian).toTimeString().slice(0, 5) : '';
+  // local_date/local_time = wall-clock in the invitation's timezone (from the server)
+  const dt = ev.local_date ?? (ev.date_gregorian ? ev.date_gregorian.slice(0, 10) : '');
+  const tm = ev.local_time ?? (ev.date_gregorian ? new Date(ev.date_gregorian).toTimeString().slice(0, 5) : '');
   return `
   <div class="card" id="ev-card-${ev.id}">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border);gap:12px">

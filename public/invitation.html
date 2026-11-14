@@ -1335,7 +1335,7 @@ function renderInvitation() {
   if (firstEvent?.iso || W.countdownISO) {
     const d = new Date(firstEvent?.iso || W.countdownISO);
     document.getElementById('heroDate').textContent =
-      d.toLocaleDateString('en-SA',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+      d.toLocaleDateString('en-SA',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:W.timeZone});
   }
 
   // Palace hero — couple names, date, venue, RSVP
@@ -1346,7 +1346,7 @@ function renderInvitation() {
   var palaceDateEl = document.getElementById('palaceDate');
   if (palaceDateEl && (firstEvent?.iso || W.countdownISO)) {
     var pd = new Date(firstEvent?.iso || W.countdownISO);
-    palaceDateEl.textContent = pd.toLocaleDateString('en-SA',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    palaceDateEl.textContent = pd.toLocaleDateString('en-SA',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:W.timeZone});
   }
   var palaceVenueEl = document.getElementById('palaceVenue');
   if (palaceVenueEl && W.venue?.nameEn) palaceVenueEl.textContent = W.venue.nameEn;
@@ -1358,7 +1358,7 @@ function renderInvitation() {
   const welcomeBody    = document.getElementById('welcomeBody');
   if (W.welcomeMessage && welcomeBody) {
     const deadlineStr = W.rsvpDeadline
-      ? new Date(W.rsvpDeadline).toLocaleDateString('en-SA',{day:'numeric',month:'long',year:'numeric'})
+      ? new Date(W.rsvpDeadline).toLocaleDateString('en-SA',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'})
       : 'the deadline';
     const rendered = W.welcomeMessage
       .replace(/\n{2,}/g, '\n')
@@ -1466,14 +1466,10 @@ function renderInvitation() {
     var venueAddr = ev.venueAddress || W.venue?.address || '';
     var mapsUrl   = ev.googleMaps || W.venue?.googleMaps || '';
     var location  = venueName + (venueAddr ? ', ' + venueAddr : '');
-    // Derive local UTC offset: compare event timeStr (local) with ISO UTC hour
-    var offsetHrs = 3; // default AST (Riyadh)
-    if (ev.timeStr && ev.iso) {
-      var localH = parseInt(ev.timeStr.split(':')[0]);
-      var utcH   = new Date(ev.iso).getUTCHours();
-      var derived = localH - utcH;
-      if (derived >= -12 && derived <= 14) offsetHrs = derived;
-    }
+    // Fixed UTC offset of the invitation's timezone (set in admin, sent by the server)
+    var offsetMin = (typeof W.utcOffsetMinutes === 'number') ? W.utcOffsetMinutes : 180;
+    // Event date as wall-clock in that timezone
+    var startWall = new Date(start.getTime() + offsetMin * 60000);
     // Parse first time in "3:30 PM" or "3:30 – 4:30 PM" into a UTC Date
     function parseLocalTime(timeStr, baseDate) {
       // Determine AM/PM from anywhere in the string
@@ -1486,7 +1482,7 @@ function renderInvitation() {
       var h = parseInt(m[1]), min = parseInt(m[2]);
       if (isPM && h < 12) h += 12;
       if (!isPM && h === 12) h = 0;
-      return new Date(Date.UTC(baseDate.getUTCFullYear(), baseDate.getUTCMonth(), baseDate.getUTCDate(), h - offsetHrs, min));
+      return new Date(Date.UTC(baseDate.getUTCFullYear(), baseDate.getUTCMonth(), baseDate.getUTCDate(), h, min - offsetMin));
     }
     var timeline = W.timeline || [];
     // Guest arrival = first timeline entry that contains "arrival"
@@ -1498,8 +1494,8 @@ function renderInvitation() {
         lastEntry = timeline[ti]; break;
       }
     }
-    var calStart = arrivalEntry ? (parseLocalTime(arrivalEntry.time, start) || start) : start;
-    var calEnd   = lastEntry   ? (parseLocalTime(lastEntry.time.split('–').pop().trim(), start) || end) : end;
+    var calStart = arrivalEntry ? (parseLocalTime(arrivalEntry.time, startWall) || start) : start;
+    var calEnd   = lastEntry   ? (parseLocalTime(lastEntry.time.split('–').pop().trim(), startWall) || end) : end;
     if (calEnd <= calStart) calEnd = new Date(calStart.getTime() + (ev.durationHours || 4) * 3600000);
     // Display label
     // Build display label: "3:30 PM" from "3:30 – 4:30 PM"
@@ -1512,7 +1508,7 @@ function renderInvitation() {
     })();
     var calDateEl = document.getElementById('calDate');
     if (calDateEl) {
-      var dateStr = ev.dateStr || start.toLocaleDateString('en-SA',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+      var dateStr = ev.dateStr || start.toLocaleDateString('en-SA',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:W.timeZone});
       calDateEl.textContent = dateStr + (arrivalTimeLabel ? ' · ' + arrivalTimeLabel : '');
     }
     // Google Calendar
@@ -1548,7 +1544,7 @@ function renderInvitation() {
   const rsvpMsgEl = document.getElementById('rsvp-message-text');
   if (rsvpMsgEl && W.rsvpMessage) {
     const deadlineStr = W.rsvpDeadline
-      ? new Date(W.rsvpDeadline).toLocaleDateString('en-SA', { day:'numeric', month:'long', year:'numeric' })
+      ? new Date(W.rsvpDeadline).toLocaleDateString('en-SA', { day:'numeric', month:'long', year:'numeric', timeZone:'UTC' })
       : 'the deadline';
     rsvpMsgEl.textContent = W.rsvpMessage.replace(/\[RSVP Deadline\]/gi, deadlineStr);
     rsvpMsgEl.style.display = 'block';

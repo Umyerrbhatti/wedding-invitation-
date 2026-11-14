@@ -50,6 +50,56 @@ const apiLimiter  = rateLimit({ windowMs: 60 * 1000,       max: 60, message: 'To
 app.use('/api/', apiLimiter);
 app.use('/api/rsvp', rsvpLimiter);
 
+// ─── Timezone helpers ────────────────────────────────────────
+// Every invitation has one fixed IANA timezone (invitations.timezone), editable
+// from the admin dashboard. All event times are entered, stored and displayed
+// as wall-clock time in that zone — never in the server's or the guest's zone.
+const DEFAULT_TZ = 'UTC';
+
+function isValidTimeZone(tz) {
+  if (typeof tz !== 'string' || !tz) return false;
+  try { new Intl.DateTimeFormat('en-US', { timeZone: tz }); return true; } catch { return false; }
+}
+
+function invTimeZone(inv) {
+  return isValidTimeZone(inv?.timezone) ? inv.timezone : DEFAULT_TZ;
+}
+
+/** Wall-clock parts of an instant in a timezone */
+function wallParts(date, tz) {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: tz, hourCycle: 'h23',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+  }).formatToParts(date);
+  const p = Object.fromEntries(parts.map(x => [x.type, x.value]));
+  return { y: +p.year, mo: +p.month, d: +p.day, h: +p.hour, mi: +p.minute, s: +p.second };
+}
+
+/** UTC offset (minutes, east positive) of a timezone at a given instant */
+function tzOffsetMinutes(date, tz) {
+  const w = wallParts(date, tz);
+  const asUtc = Date.UTC(w.y, w.mo - 1, w.d, w.h, w.mi, w.s);
+  return Math.round((asUtc - Math.floor(date.getTime() / 1000) * 1000) / 60000);
+}
+
+/** "YYYY-MM-DDTHH:mm[:ss]" wall-clock time in tz → Date (UTC instant), or null */
+function wallToUtc(wall, tz) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2}))?$/.exec(String(wall));
+  if (!m) return null;
+  const guess = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +(m[6] || 0));
+  let ts = guess - tzOffsetMinutes(new Date(guess), tz) * 60000;
+  ts = guess - tzOffsetMinutes(new Date(ts), tz) * 60000;   // second pass for DST edges
+  return new Date(ts);
+}
+
+/** Instant → { date: "YYYY-MM-DD", time: "HH:mm" } wall-clock in tz */
+function utcToWall(date, tz) {
+  const w = wallParts(new Date(date), tz);
+  const pad = n => String(n).padStart(2, '0');
+  return { date: `${w.y}-${pad(w.mo)}-${pad(w.d)}`, time: `${pad(w.h)}:${pad(w.mi)}` };
+}
+
 // ─── Helpers ─────────────────────────────────────────────────
 async function requireAdmin(req, res, next) {
   const auth = req.headers.authorization;
@@ -121,11 +171,15 @@ app.post('/api/rsvp', async (req, res) => {
   }
 
   const { data: inv } = await supabasePublic
-    .from('invitations').select('id, rsvp_enabled, rsvp_deadline').eq('slug', slug).single();
+    .from('invitations').select('*').eq('slug', slug).single();
 
   if (!inv)                return res.status(404).json({ error: 'Invitation not found' });
   if (!inv.rsvp_enabled)   return res.status(403).json({ error: 'RSVP is closed' });
-  if (inv.rsvp_deadline && new Date(inv.rsvp_deadline) < new Date()) {
+  // Deadline closes at the end of that day in the invitation's timezone
+  const deadlineEnd = inv.rsvp_deadline
+    ? wallToUtc(`${String(inv.rsvp_deadline).slice(0, 10)}T23:59:59`, invTimeZone(inv))
+    : null;
+  if (deadlineEnd && deadlineEnd < new Date()) {
     return res.status(403).json({ error: 'RSVP deadline has passed' });
   }
 
@@ -340,16 +394,41 @@ app.put('/api/admin/invitation/:id', requireAdmin, async (req, res) => {
     'contact_phone','contact_email','share_text','rsvp_deadline',
     'rsvp_enabled','max_guests_per_rsvp','is_active',
     'music_url','bg_photo_url','dress_code_colors','invite_message_template','rsvp_message','welcome_message',
-    'timeline_items',
+    'timeline_items','timezone',
   ];
   const updates = Object.fromEntries(
     Object.entries(req.body).filter(([k]) => allowed.includes(k))
   );
 
+  // Timezone change: keep every event at the same wall-clock time in the new zone
+  let reanchor = null;
+  if (updates.timezone !== undefined) {
+    if (!isValidTimeZone(updates.timezone)) {
+      return res.status(400).json({ error: 'Invalid timezone. Use an IANA name such as Asia/Karachi.' });
+    }
+    const { data: current } = await supabaseService
+      .from('invitations').select('*, events(id, date_gregorian)').eq('id', req.params.id).single();
+    const oldTz = invTimeZone(current);
+    if (current && oldTz !== updates.timezone) {
+      reanchor = { oldTz, newTz: updates.timezone, events: current.events || [] };
+    }
+  }
+
   const { data, error } = await supabaseService
     .from('invitations').update(updates).eq('id', req.params.id).select().single();
 
   if (error) return res.status(500).json({ error });
+
+  if (reanchor) {
+    for (const ev of reanchor.events) {
+      if (!ev.date_gregorian) continue;
+      const wall = utcToWall(ev.date_gregorian, reanchor.oldTz);
+      const moved = wallToUtc(`${wall.date}T${wall.time}`, reanchor.newTz);
+      const { error: evErr } = await supabaseService
+        .from('events').update({ date_gregorian: moved.toISOString() }).eq('id', ev.id);
+      if (evErr) return res.status(500).json({ error: 'Timezone saved, but event times could not be adjusted. Re-save each event.' });
+    }
+  }
   res.json(data);
 });
 
@@ -365,6 +444,18 @@ app.put('/api/admin/event/:id', requireAdmin, async (req, res) => {
   const updates = Object.fromEntries(
     Object.entries(req.body).filter(([k]) => allowed.includes(k))
   );
+
+  // A date without an offset is wall-clock time in the invitation's timezone
+  if (typeof updates.date_gregorian === 'string' && !/(Z|[+-]\d{2}:?\d{2})$/.test(updates.date_gregorian)) {
+    const { data: ev } = await supabaseService
+      .from('events').select('invitation_id').eq('id', req.params.id).single();
+    const { data: inv } = ev
+      ? await supabaseService.from('invitations').select('*').eq('id', ev.invitation_id).single()
+      : { data: null };
+    const instant = wallToUtc(updates.date_gregorian, invTimeZone(inv));
+    if (!instant) return res.status(400).json({ error: 'Invalid event date/time' });
+    updates.date_gregorian = instant.toISOString();
+  }
 
   const { data, error } = await supabaseService
     .from('events').update(updates).eq('id', req.params.id).select().single();
@@ -394,7 +485,11 @@ app.post('/api/admin/event', requireAdmin, async (req, res) => {
   }).select().single();
 
   if (error) return res.status(500).json({ error });
-  res.status(201).json(data);
+
+  // Wall-clock date/time in the invitation's timezone, for the edit form
+  const { data: inv } = await supabaseService.from('invitations').select('*').eq('id', invitation_id).single();
+  const wall = utcToWall(data.date_gregorian, invTimeZone(inv));
+  res.status(201).json({ ...data, local_date: wall.date, local_time: wall.time });
 });
 
 /** Delete an event */
@@ -423,6 +518,14 @@ app.get('/api/admin/invitation-details/:slug', requireAdmin, async (req, res) =>
     .single();
 
   if (error || !data) return res.status(404).json({ error: 'Not found' });
+
+  // Event date/time as wall-clock in the invitation's timezone, for the edit form
+  const tz = invTimeZone(data);
+  data.timezone = tz;
+  data.events = (data.events || []).map(e => {
+    const wall = e.date_gregorian ? utcToWall(e.date_gregorian, tz) : { date: '', time: '' };
+    return { ...e, local_date: wall.date, local_time: wall.time };
+  });
   res.json(data);
 });
 
@@ -467,14 +570,15 @@ app.listen(PORT, () => {
 // HELPER: map DB row → invitation config for the frontend
 // ─────────────────────────────────────────────────────────────
 function buildConfig(inv, guestName = '') {
+  const tz = invTimeZone(inv);
   const events = (inv.events || []).map(e => ({
     type:         e.event_type,
     badgeEn:      e.badge_en  || e.name_en,
     nameAr:       e.name_ar   || e.name_en,
     nameEn:       e.name_en,
     hijri:        e.date_hijri_str || '',
-    dateStr:      new Date(e.date_gregorian).toLocaleDateString('en-SA', { weekday:'long', year:'numeric', month:'long', day:'numeric' }),
-    timeStr:      new Date(e.date_gregorian).toLocaleTimeString('en-SA', { hour:'2-digit', minute:'2-digit', hour12:false }),
+    dateStr:      new Date(e.date_gregorian).toLocaleDateString('en-SA', { weekday:'long', year:'numeric', month:'long', day:'numeric', timeZone: tz }),
+    timeStr:      new Date(e.date_gregorian).toLocaleTimeString('en-SA', { hour:'2-digit', minute:'2-digit', hour12:false, timeZone: tz }),
     venueAr:      e.venue_name_ar || e.venue_name_en,
     venueEn:      e.venue_name_en,
     venueAddress: e.venue_address,
@@ -525,5 +629,7 @@ function buildConfig(inv, guestName = '') {
     events,
     venue,
     countdownISO:    inv.events?.[0]?.date_gregorian || '',
+    timeZone:        tz,
+    utcOffsetMinutes: first?.date_gregorian ? tzOffsetMinutes(new Date(first.date_gregorian), tz) : 0,
   };
 }
